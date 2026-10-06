@@ -1,1 +1,4673 @@
+<!DOCTYPE html>
 
+<html lang="fr">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>SAMGPT</title>
+
+<style>
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html,
+body {
+    width: 100%;
+    height: 100%;
+}
+
+body {
+
+    font-family:
+        Inter,
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        Arial,
+        sans-serif;
+
+    background: #0b0d12;
+    color: #f4f7fb;
+
+    overflow: hidden;
+}
+
+.app {
+
+    width: 100vw;
+    height: 100vh;
+
+    display: flex;
+
+    background:
+        radial-gradient(
+            circle at top right,
+            rgba(25,195,125,0.08),
+            transparent 30%
+        ),
+        #0b0d12;
+}
+
+.sidebar {
+
+    width: 260px;
+    height: 100%;
+
+    background: rgba(18,21,29,0.96);
+
+    border-right: 1px solid #252a35;
+
+    display: flex;
+    flex-direction: column;
+
+    padding: 18px 14px;
+
+    flex-shrink: 0;
+}
+
+.logo {
+
+    display: flex;
+    align-items: center;
+
+    gap: 10px;
+
+    padding: 10px 12px 22px;
+}
+
+.logo-icon {
+
+    width: 38px;
+    height: 38px;
+
+    border-radius: 12px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background:
+        linear-gradient(
+            135deg,
+            #19c37d,
+            #0f9f68
+        );
+
+    font-size: 20px;
+
+    box-shadow:
+        0 8px 25px rgba(25,195,125,0.18);
+}
+
+.logo-text {
+
+    font-size: 20px;
+    font-weight: 750;
+
+    letter-spacing: -0.5px;
+}
+
+.new-chat {
+
+    width: 100%;
+
+    border: 1px solid #303745;
+
+    background: #1b2029;
+
+    color: #f5f7fb;
+
+    border-radius: 12px;
+
+    padding: 12px 14px;
+
+    font-size: 14px;
+
+    cursor: pointer;
+
+    transition: 0.2s;
+
+    text-align: left;
+
+    margin-bottom: 25px;
+}
+
+.new-chat:hover {
+
+    background: #242b36;
+
+    border-color: #3a4352;
+
+    transform: translateY(-1px);
+}
+
+.section-title {
+
+    color: #6f7888;
+
+    font-size: 10px;
+
+    font-weight: 700;
+
+    letter-spacing: 1px;
+
+    padding: 0 12px 9px;
+}
+
+.chat-history {
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 5px;
+
+    overflow-y: auto;
+}
+
+.history-row {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 4px;
+}
+
+.history-item {
+
+    flex: 1;
+
+    min-width: 0;
+
+    border: none;
+
+    background: transparent;
+
+    color: #aeb6c4;
+
+    border-radius: 10px;
+
+    padding: 10px 12px;
+
+    text-align: left;
+
+    font-size: 13px;
+
+    cursor: pointer;
+
+    white-space: nowrap;
+
+    overflow: hidden;
+
+    text-overflow: ellipsis;
+
+    transition: 0.2s;
+}
+
+.history-item:hover {
+
+    background: #1d232d;
+
+    color: white;
+}
+
+.history-item.active {
+
+    background: #202731;
+
+    color: white;
+}
+
+.delete-chat {
+
+    width: 30px;
+    height: 30px;
+
+    border: none;
+
+    border-radius: 8px;
+
+    background: transparent;
+
+    color: #6f7888;
+
+    cursor: pointer;
+
+    flex-shrink: 0;
+
+    transition: 0.2s;
+}
+
+.delete-chat:hover {
+
+    background: #302027;
+
+    color: #ff6b6b;
+}
+
+.sidebar-bottom {
+
+    margin-top: auto;
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 4px;
+}
+
+.sidebar-button {
+
+    width: 100%;
+
+    border: none;
+
+    background: transparent;
+
+    color: #aeb6c4;
+
+    padding: 11px 12px;
+
+    border-radius: 10px;
+
+    text-align: left;
+
+    cursor: pointer;
+
+    font-size: 13px;
+
+    transition: 0.2s;
+}
+
+.sidebar-button:hover {
+
+    background: #1d232d;
+
+    color: white;
+}
+
+.main {
+
+    flex: 1;
+
+    height: 100%;
+
+    min-width: 0;
+
+    display: flex;
+
+    flex-direction: column;
+}
+
+.header {
+
+    height: 66px;
+
+    flex-shrink: 0;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    padding: 0 25px;
+
+    border-bottom: 1px solid #252a35;
+
+    background: rgba(11,13,18,0.85);
+
+    backdrop-filter: blur(15px);
+}
+
+.header-left {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 12px;
+}
+
+.header-title {
+
+    font-size: 16px;
+
+    font-weight: 700;
+}
+
+.online {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 5px;
+
+    color: #19c37d;
+
+    font-size: 11px;
+
+    font-weight: 600;
+}
+
+.online-dot {
+
+    width: 6px;
+    height: 6px;
+
+    border-radius: 50%;
+
+    background: #19c37d;
+
+    box-shadow:
+        0 0 8px rgba(25,195,125,0.8);
+}
+
+.header-actions {
+
+    display: flex;
+
+    gap: 7px;
+}
+
+.icon-button {
+
+    width: 36px;
+    height: 36px;
+
+    border: 1px solid #282e39;
+
+    background: #151922;
+
+    color: #aeb6c4;
+
+    border-radius: 10px;
+
+    cursor: pointer;
+
+    font-size: 15px;
+
+    transition: 0.2s;
+}
+
+.icon-button:hover {
+
+    color: white;
+
+    background: #202631;
+
+    border-color: #394252;
+}
+
+.chat {
+
+    flex: 1;
+
+    min-height: 0;
+
+    overflow-y: auto;
+
+    padding: 30px 8%;
+}
+
+.chat::-webkit-scrollbar {
+
+    width: 7px;
+}
+
+.chat::-webkit-scrollbar-track {
+
+    background: transparent;
+}
+
+.chat::-webkit-scrollbar-thumb {
+
+    background: #2b313c;
+
+    border-radius: 10px;
+}
+
+.welcome {
+
+    max-width: 700px;
+
+    margin: 8vh auto 0;
+
+    text-align: center;
+}
+
+.welcome-logo {
+
+    width: 68px;
+    height: 68px;
+
+    margin: auto auto 20px;
+
+    border-radius: 22px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    font-size: 32px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #19c37d,
+            #0e8f5e
+        );
+
+    box-shadow:
+        0 15px 45px rgba(25,195,125,0.15);
+}
+
+.welcome h1 {
+
+    font-size: 31px;
+
+    letter-spacing: -1px;
+
+    margin-bottom: 10px;
+}
+
+.welcome p {
+
+    color: #7f8999;
+
+    font-size: 14px;
+
+    line-height: 1.6;
+}
+
+.suggestions {
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(2, minmax(0,1fr));
+
+    gap: 10px;
+
+    margin-top: 28px;
+}
+
+.suggestion {
+
+    padding: 14px;
+
+    background: #131720;
+
+    border: 1px solid #252b36;
+
+    border-radius: 13px;
+
+    color: #b8c0cc;
+
+    text-align: left;
+
+    cursor: pointer;
+
+    transition: 0.2s;
+
+    font-size: 13px;
+}
+
+.suggestion:hover {
+
+    background: #1a202a;
+
+    border-color: #384251;
+
+    color: white;
+
+    transform: translateY(-2px);
+}
+
+.message {
+
+    display: flex;
+
+    gap: 13px;
+
+    max-width: 850px;
+
+    margin: 0 auto 22px;
+
+    animation: messageIn 0.25s ease;
+}
+
+@keyframes messageIn {
+
+    from {
+        opacity: 0;
+        transform: translateY(6px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.message.user {
+
+    justify-content: flex-end;
+}
+
+.avatar {
+
+    width: 34px;
+    height: 34px;
+
+    flex-shrink: 0;
+
+    border-radius: 11px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    font-size: 15px;
+
+    background: #1e2530;
+
+    border: 1px solid #2b323e;
+}
+
+.message.user .avatar {
+
+    order: 2;
+
+    background: #19c37d;
+
+    border-color: #19c37d;
+}
+
+.bubble {
+
+    max-width: 72%;
+
+    padding: 13px 16px;
+
+    border-radius: 15px;
+
+    color: #e9edf3;
+
+    font-size: 14px;
+
+    line-height: 1.65;
+
+    white-space: pre-wrap;
+
+    word-wrap: break-word;
+}
+
+.message.bot .bubble {
+
+    background: #151a22;
+
+    border: 1px solid #252c37;
+
+    border-top-left-radius: 5px;
+}
+
+.message.user .bubble {
+
+    background: #1b7657;
+
+    border: 1px solid #269b73;
+
+    border-top-right-radius: 5px;
+
+    color: white;
+}
+
+.input-area {
+
+    flex-shrink: 0;
+
+    padding:
+        10px
+        8%
+        20px;
+}
+
+.input-wrapper {
+
+    max-width: 850px;
+
+    margin: auto;
+
+    display: flex;
+
+    align-items: flex-end;
+
+    gap: 8px;
+
+    padding: 8px;
+
+    background: #151a22;
+
+    border: 1px solid #303744;
+
+    border-radius: 17px;
+
+    box-shadow:
+        0 12px 40px rgba(0,0,0,0.22);
+
+    transition: 0.2s;
+}
+
+.input-wrapper:focus-within {
+
+    border-color: #19c37d;
+
+    box-shadow:
+        0 0 0 3px rgba(25,195,125,0.08);
+}
+
+#messageInput {
+
+    flex: 1;
+
+    min-height: 24px;
+
+    max-height: 150px;
+
+    resize: none;
+
+    border: none;
+
+    outline: none;
+
+    background: transparent;
+
+    color: #f4f7fb;
+
+    font-family: inherit;
+
+    font-size: 14px;
+
+    line-height: 1.5;
+
+    padding: 8px 9px;
+}
+
+#messageInput::placeholder {
+
+    color: #626c7b;
+}
+
+.send-button {
+
+    width: 40px;
+    height: 40px;
+
+    flex-shrink: 0;
+
+    border: none;
+
+    border-radius: 12px;
+
+    background: #19c37d;
+
+    color: white;
+
+    cursor: pointer;
+
+    font-size: 18px;
+
+    transition: 0.2s;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+}
+
+.send-button:hover {
+
+    background: #16ad6f;
+
+    transform: translateY(-1px);
+}
+
+.send-button:active {
+
+    transform: scale(0.95);
+}
+
+.hint {
+
+    text-align: center;
+
+    color: #555f6f;
+
+    font-size: 9px;
+
+    margin-top: 8px;
+}
+
+.modal-overlay {
+
+    position: fixed;
+
+    inset: 0;
+
+    display: none;
+
+    align-items: center;
+
+    justify-content: center;
+
+    background: rgba(0,0,0,0.65);
+
+    backdrop-filter: blur(7px);
+
+    z-index: 100;
+}
+
+.modal-overlay.show {
+
+    display: flex;
+}
+
+.modal {
+
+    width: min(500px, calc(100vw - 30px));
+
+    max-height: 85vh;
+
+    overflow-y: auto;
+
+    background: #171b23;
+
+    border: 1px solid #303744;
+
+    border-radius: 18px;
+
+    padding: 24px;
+
+    box-shadow:
+        0 30px 100px rgba(0,0,0,0.5);
+}
+
+.modal h2 {
+
+    font-size: 19px;
+
+    margin-bottom: 8px;
+}
+
+.modal p {
+
+    color: #8b95a4;
+
+    font-size: 13px;
+
+    line-height: 1.6;
+
+    margin-bottom: 20px;
+}
+
+.modal-close {
+
+    width: 100%;
+
+    padding: 11px;
+
+    border: none;
+
+    border-radius: 10px;
+
+    background: #19c37d;
+
+    color: white;
+
+    cursor: pointer;
+
+    font-weight: 600;
+}
+
+.profile-grid {
+
+    display: grid;
+
+    grid-template-columns: 1fr 1fr;
+
+    gap: 12px;
+
+    margin-bottom: 20px;
+}
+
+.profile-field {
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 6px;
+}
+
+.profile-field.full {
+
+    grid-column: 1 / -1;
+}
+
+.profile-field label {
+
+    color: #aeb6c4;
+
+    font-size: 12px;
+
+    font-weight: 600;
+}
+
+.profile-field input,
+.profile-field textarea {
+
+    width: 100%;
+
+    border: 1px solid #303744;
+
+    background: #10141b;
+
+    color: white;
+
+    border-radius: 10px;
+
+    padding: 10px;
+
+    outline: none;
+
+    font-family: inherit;
+
+    font-size: 13px;
+}
+
+.profile-field input:focus,
+.profile-field textarea:focus {
+
+    border-color: #19c37d;
+}
+
+.profile-field textarea {
+
+    min-height: 70px;
+
+    resize: vertical;
+}
+
+.profile-actions {
+
+    display: flex;
+
+    gap: 8px;
+}
+
+.profile-save {
+
+    flex: 1;
+
+    padding: 11px;
+
+    border: none;
+
+    border-radius: 10px;
+
+    background: #19c37d;
+
+    color: white;
+
+    cursor: pointer;
+
+    font-weight: 600;
+}
+
+.profile-cancel {
+
+    padding: 11px 16px;
+
+    border: 1px solid #303744;
+
+    border-radius: 10px;
+
+    background: #202631;
+
+    color: white;
+
+    cursor: pointer;
+}
+
+
+body.light-theme {
+    background: #f4f7fb;
+    color: #18202b;
+}
+
+body.light-theme .app { background: #f4f7fb; }
+body.light-theme .sidebar,
+body.light-theme .header { background: rgba(255,255,255,0.96); }
+body.light-theme .sidebar { border-right-color: #dfe4eb; }
+body.light-theme .header { border-bottom-color: #dfe4eb; }
+body.light-theme .header-title,
+body.light-theme .welcome h1 { color: #18202b; }
+body.light-theme .welcome p,
+body.light-theme .section-title { color: #667085; }
+body.light-theme .suggestion,
+body.light-theme .input-wrapper,
+body.light-theme .message.bot .bubble,
+body.light-theme .icon-button { background: #ffffff; border-color: #dfe4eb; color: #344054; }
+body.light-theme #messageInput { color: #18202b; }
+body.light-theme #messageInput::placeholder { color: #98a2b3; }
+body.light-theme .history-item,
+body.light-theme .sidebar-button { color: #667085; }
+body.light-theme .history-item:hover,
+body.light-theme .sidebar-button:hover { background: #eef2f6; color: #18202b; }
+body.light-theme .new-chat { background: #f1f4f8; color: #18202b; border-color: #dfe4eb; }
+
+@media (max-width: 800px) {
+
+    .sidebar {
+        width: 210px;
+    }
+
+    .chat {
+        padding-left: 20px;
+        padding-right: 20px;
+    }
+
+    .input-area {
+        padding-left: 20px;
+        padding-right: 20px;
+    }
+
+    .bubble {
+        max-width: 85%;
+    }
+}
+
+@media (max-width: 620px) {
+
+    .sidebar {
+        width: 70px;
+
+        padding-left: 8px;
+        padding-right: 8px;
+    }
+
+    .logo-text,
+    .new-chat,
+    .section-title,
+    .history-item,
+    .sidebar-button {
+
+        font-size: 0;
+
+        padding-left: 0;
+        padding-right: 0;
+
+        text-align: center;
+    }
+
+    .logo {
+
+        justify-content: center;
+
+        padding-left: 0;
+        padding-right: 0;
+    }
+
+    .logo-icon {
+
+        width: 40px;
+        height: 40px;
+    }
+
+    .delete-chat {
+
+        display: none;
+    }
+
+    .suggestions {
+
+        grid-template-columns: 1fr;
+    }
+
+    .welcome h1 {
+
+        font-size: 25px;
+    }
+
+    .profile-grid {
+
+        grid-template-columns: 1fr;
+    }
+
+    .profile-field.full {
+
+        grid-column: auto;
+    }
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="app">
+
+<aside class="sidebar">
+
+<div class="logo">
+
+    <div class="logo-icon">
+        🤖
+    </div>
+
+    <div class="logo-text">
+        SAMGPT
+    </div>
+
+</div>
+
+<button
+    class="new-chat"
+    id="newChatButton">
+
+    ＋ &nbsp; Nouveau chat
+
+</button>
+
+<div class="section-title">
+    CHATS RÉCENTS
+</div>
+
+<div
+    class="chat-history"
+    id="chatHistory">
+</div>
+
+<div class="sidebar-bottom">
+
+    <button
+        class="sidebar-button"
+        id="profileButton">
+
+        👤 &nbsp; Profil
+
+    </button>
+
+    <button
+        class="sidebar-button"
+        id="memoryButton">
+
+        🧠 &nbsp; Mémoire
+
+    </button>
+
+    <button
+        class="sidebar-button"
+        id="resetButton">
+
+        🧹 &nbsp; Réinitialiser
+
+    </button>
+
+</div>
+
+</aside>
+
+<main class="main">
+
+<header class="header">
+
+<div class="header-left">
+
+    <div class="header-title">
+        SAMGPT
+    </div>
+
+    <div class="online">
+
+        <span class="online-dot"></span>
+
+        En ligne
+
+    </div>
+
+</div>
+
+<div class="header-actions">
+
+    <button
+        class="icon-button"
+        id="questionsButton"
+        title="Aide">
+
+        ?
+
+    </button>
+
+    <button
+        class="icon-button"
+        id="settingsButton"
+        title="Paramètres">
+
+        ⚙
+
+    </button>
+
+</div>
+
+</header>
+
+<section
+    class="chat"
+    id="chat">
+
+<div
+    class="welcome"
+    id="welcome">
+
+    <div class="welcome-logo">
+        🤖
+    </div>
+
+    <h1>
+        Bienvenue sur SAMGPT
+    </h1>
+
+    <p>
+        Ton assistant personnel.
+        Pose-moi une question pour commencer.
+    </p>
+
+    <div class="suggestions">
+
+        <button
+            class="suggestion"
+            data-question="Comment fonctionne un turbo ?">
+
+            🔥 Comment fonctionne un turbo ?
+
+        </button>
+
+        <button
+            class="suggestion"
+            data-question="Explique-moi Minecraft">
+
+            🎮 Explique-moi Minecraft
+
+        </button>
+
+        <button
+            class="suggestion"
+            data-question="Qu'est-ce que l'aérodynamique ?">
+
+            🌬️ Qu'est-ce que l'aérodynamique ?
+
+        </button>
+
+        <button
+            class="suggestion"
+            data-question="Comment apprendre Python ?">
+
+            🐍 Comment apprendre Python ?
+
+        </button>
+
+    </div>
+
+</div>
+
+</section>
+
+<div class="input-area">
+
+<div class="input-wrapper">
+
+    <textarea
+        id="messageInput"
+        placeholder="Écris /questions pour savoir quelles questions tu peux poser..."
+        rows="1"></textarea>
+
+    <button
+        class="send-button"
+        id="sendButton"
+        title="Envoyer">
+
+        ➤
+
+    </button>
+
+</div>
+
+<div class="hint">
+    Entrée pour envoyer • Shift + Entrée pour une nouvelle ligne
+</div>
+
+</div>
+
+</main>
+
+</div>
+
+<div
+    class="modal-overlay"
+    id="modalOverlay">
+
+<div class="modal">
+
+    <h2 id="modalTitle">
+        SAMGPT
+    </h2>
+
+    <div id="modalContent">
+
+        <p id="modalText">
+            Bienvenue sur SAMGPT.
+        </p>
+
+    </div>
+
+    <button
+        class="modal-close"
+        id="modalClose">
+
+        Fermer
+
+    </button>
+
+</div>
+
+</div>
+
+<script>
+
+let profilUtilisateur = {
+
+    prenom: "",
+    age: "",
+    sport: [],
+    jeux: [],
+    couleur: "",
+    passion: "",
+    pays: "",
+    classe: "",
+    animalPrefere: "",
+    filmPrefere: "",
+    musiquePreferee: ""
+
+};
+
+let conversation = [];
+
+let historique = [];
+
+let chatActuel = null;
+
+// Sujet actuellement discuté.
+// topic = grand thème, subtopic = élément précis dont on vient de parler.
+let contexte = {
+    topic: "",
+    subtopic: ""
+};
+
+const chat =
+    document.getElementById("chat");
+
+const input =
+    document.getElementById("messageInput");
+
+const sendButton =
+    document.getElementById("sendButton");
+
+const welcome =
+    document.getElementById("welcome");
+
+const historyContainer =
+    document.getElementById("chatHistory");
+
+const modal =
+    document.getElementById("modalOverlay");
+
+const modalTitle =
+    document.getElementById("modalTitle");
+
+const modalContent =
+    document.getElementById("modalContent");
+
+const modalClose =
+    document.getElementById("modalClose");
+
+
+function nettoyer(texte) {
+
+    return String(texte || "")
+        .toLowerCase()
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        // Les apostrophes françaises/anglaises deviennent des espaces
+        .replace(/[’']/g, " ")
+        // Abréviations très courantes dans les messages
+        .replace(/\bc quoi\b/g, "c est quoi")
+        .replace(/\bc koi\b/g, "c est quoi")
+        .replace(/\bc qoi\b/g, "c est quoi")
+        .replace(/\bkeske\b/g, "qu est ce que")
+        .replace(/\bpk\b/g, "pourquoi")
+        .replace(/\bpq\b/g, "pourquoi")
+        .replace(/\bkomment\b/g, "comment")
+        .replace(/\bcomen\b/g, "comment")
+        .replace(/\bkel\b/g, "quel")
+        .replace(/\bkele\b/g, "quelle")
+        .replace(/\bkoi\b/g, "quoi")
+        .replace(/\bki\b/g, "qui")
+        .replace(/\bkel\b/g, "quel")
+        .replace(/\bqel\b/g, "quel")
+        .replace(/\bkeske\b/g, "qu est ce que")
+        .replace(/\bqsk\b/g, "qu est ce que")
+        // On garde les chiffres et les opérateurs pour les calculs
+        .replace(/[^a-z0-9+\-*/().%\s]/g, " ")
+        .replace(/\s+/g, " ")
+        .trim();
+}
+
+
+/*
+   SAMGPT est volontairement très tolérant.
+   Il peut comprendre :
+   - les accents oubliés
+   - les apostrophes oubliées
+   - les mots collés (mappelle, cquoi, etc.)
+   - beaucoup de petites fautes de frappe
+   - des formulations différentes d'une même question
+*/
+function compact(texte) {
+    return nettoyer(texte).replace(/\s+/g, "");
+}
+
+
+function distanceLevenshtein(a, b) {
+
+    if (a === b) return 0;
+    if (!a.length) return b.length;
+    if (!b.length) return a.length;
+
+    const ligne = Array.from({ length: b.length + 1 }, (_, i) => i);
+
+    for (let i = 1; i <= a.length; i++) {
+
+        let precedent = ligne[0];
+        ligne[0] = i;
+
+        for (let j = 1; j <= b.length; j++) {
+
+            const ancien = ligne[j];
+            const cout = a[i - 1] === b[j - 1] ? 0 : 1;
+
+            ligne[j] = Math.min(
+                ligne[j] + 1,
+                ligne[j - 1] + 1,
+                precedent + cout
+            );
+
+            precedent = ancien;
+        }
+    }
+
+    return ligne[b.length];
+}
+
+
+function motProche(mot, cible) {
+
+    if (!mot || !cible) return false;
+    if (mot === cible) return true;
+
+    // Très courts mots : on évite les faux positifs
+    if (cible.length <= 2) {
+        return distanceLevenshtein(mot, cible) <= 1;
+    }
+
+    const distance = distanceLevenshtein(mot, cible);
+    const longueur = Math.max(mot.length, cible.length);
+
+    // Plus le mot est long, plus on autorise de petites fautes.
+    let maximum = 1;
+    if (longueur >= 7) maximum = 2;
+    if (longueur >= 11) maximum = 3;
+
+    return distance <= maximum && distance / longueur <= 0.35;
+}
+
+
+function phraseProche(question, cible) {
+
+    const q = nettoyer(question);
+    const c = nettoyer(cible);
+
+    if (!q || !c) return false;
+    if (q === c) return true;
+    if (q.includes(c) || c.includes(q)) return true;
+
+    const qc = compact(q);
+    const cc = compact(c);
+
+    if (qc === cc || qc.includes(cc) || cc.includes(qc)) {
+        return true;
+    }
+
+    const qWords = q.split(" ").filter(Boolean);
+    const cWords = c.split(" ").filter(Boolean);
+
+    // Pour une phrase, tous les mots importants de la cible
+    // doivent être retrouvés, même avec une petite faute.
+    if (cWords.length > 1) {
+
+        const correspondances = cWords.filter(cw =>
+            qWords.some(qw => motProche(qw, cw))
+        );
+
+        if (correspondances.length === cWords.length) {
+            return true;
+        }
+    }
+
+    const distance = distanceLevenshtein(qc, cc);
+    const longueur = Math.max(qc.length, cc.length);
+
+    return longueur > 2 && distance / longueur <= 0.32;
+}
+
+
+function contient(texte, mot) {
+
+    const q = nettoyer(texte);
+    const cible = nettoyer(mot);
+
+    if (!q || !cible) return false;
+
+    // Cas normal
+    if (q.includes(cible)) return true;
+
+    // Cas où l'utilisateur colle les mots
+    const qc = compact(q);
+    const cc = compact(cible);
+
+    if (qc.includes(cc)) return true;
+
+    // Tolérance aux fautes de frappe
+    const qWords = q.split(" ").filter(Boolean);
+    const cWords = cible.split(" ").filter(Boolean);
+
+    if (cWords.length === 1) {
+        return qWords.some(word => motProche(word, cWords[0]));
+    }
+
+    // Pour une expression de plusieurs mots,
+    // on vérifie chaque mot séparément.
+    return cWords.every(cWord =>
+        qWords.some(qWord => motProche(qWord, cWord))
+    );
+}
+
+
+function correspond(question, variantes, tolerance = 0.32) {
+
+    return variantes.some(variante =>
+        phraseProche(question, variante)
+    );
+}
+
+
+
+function convertirListe(texte) {
+
+    if (!texte) {
+        return [];
+    }
+
+    return texte
+
+        .split(",")
+
+        .map(element => element.trim())
+
+        .filter(element => element !== "");
+}
+
+
+function listeVersTexte(liste) {
+
+    if (!Array.isArray(liste)) {
+        return "";
+    }
+
+    return liste.join(", ");
+}
+
+
+function echapperHTML(texte) {
+
+    return String(texte || "")
+
+        .replace(/&/g, "&amp;")
+
+        .replace(/</g, "&lt;")
+
+        .replace(/>/g, "&gt;")
+
+        .replace(/"/g, "&quot;")
+
+        .replace(/'/g, "&#039;");
+}
+
+
+function ouvrirProfil() {
+
+    modalTitle.textContent = "👤 Mon profil";
+
+    modalContent.innerHTML = `
+
+        <div class="profile-grid">
+
+            <div class="profile-field">
+
+                <label>Prénom</label>
+
+                <input
+                    id="profilePrenom"
+                    value="${echapperHTML(profilUtilisateur.prenom)}"
+                    placeholder="Ex : Samuel">
+
+            </div>
+
+            <div class="profile-field">
+
+                <label>Âge</label>
+
+                <input
+                    id="profileAge"
+                    type="number"
+                    min="1"
+                    max="120"
+                    value="${echapperHTML(profilUtilisateur.age)}"
+                    placeholder="Ex : 14">
+
+            </div>
+
+            <div class="profile-field full">
+
+                <label>Sports préférés</label>
+
+                <input
+                    id="profileSport"
+                    value="${echapperHTML(listeVersTexte(profilUtilisateur.sport))}"
+                    placeholder="Ex : football, tennis, basket">
+
+            </div>
+
+            <div class="profile-field full">
+
+                <label>Jeux préférés</label>
+
+                <input
+                    id="profileJeux"
+                    value="${echapperHTML(listeVersTexte(profilUtilisateur.jeux))}"
+                    placeholder="Ex : Minecraft, Brawl Stars">
+
+            </div>
+
+            <div class="profile-field">
+
+                <label>Couleur préférée</label>
+
+                <input
+                    id="profileCouleur"
+                    value="${echapperHTML(profilUtilisateur.couleur)}"
+                    placeholder="Ex : vert">
+
+            </div>
+
+            <div class="profile-field">
+
+                <label>Animal préféré</label>
+
+                <input
+                    id="profileAnimal"
+                    value="${echapperHTML(profilUtilisateur.animalPrefere)}"
+                    placeholder="Ex : chien">
+
+            </div>
+
+            <div class="profile-field">
+
+                <label>Pays</label>
+
+                <input
+                    id="profilePays"
+                    value="${echapperHTML(profilUtilisateur.pays)}"
+                    placeholder="Ex : Belgique">
+
+            </div>
+
+            <div class="profile-field">
+
+                <label>Classe / niveau scolaire</label>
+
+                <input
+                    id="profileClasse"
+                    value="${echapperHTML(profilUtilisateur.classe)}"
+                    placeholder="Ex : 4ème">
+
+            </div>
+
+            <div class="profile-field full">
+
+                <label>Passions</label>
+
+                <textarea
+                    id="profilePassion"
+                    placeholder="Ex : football, voitures, informatique">${echapperHTML(profilUtilisateur.passion)}</textarea>
+
+            </div>
+
+            <div class="profile-field">
+
+                <label>Film préféré</label>
+
+                <input
+                    id="profileFilm"
+                    value="${echapperHTML(profilUtilisateur.filmPrefere)}"
+                    placeholder="Ex : Interstellar">
+
+            </div>
+
+            <div class="profile-field">
+
+                <label>Musique préférée</label>
+
+                <input
+                    id="profileMusique"
+                    value="${echapperHTML(profilUtilisateur.musiquePreferee)}"
+                    placeholder="Ex : rap">
+
+            </div>
+
+        </div>
+
+        <div class="profile-actions">
+
+            <button
+                class="profile-cancel"
+                id="profileCancel">
+
+                Annuler
+
+            </button>
+
+            <button
+                class="profile-save"
+                id="profileSave">
+
+                💾 Enregistrer
+
+            </button>
+
+        </div>
+    `;
+
+    document
+        .getElementById("profileCancel")
+        .onclick = fermerModal;
+
+    document
+        .getElementById("profileSave")
+        .onclick = sauvegarderProfil;
+
+    modal.classList.add("show");
+}
+
+
+function sauvegarderProfil() {
+
+    profilUtilisateur.prenom =
+        document
+            .getElementById("profilePrenom")
+            .value
+            .trim();
+
+    profilUtilisateur.age =
+        document
+            .getElementById("profileAge")
+            .value
+            .trim();
+
+    profilUtilisateur.sport =
+        convertirListe(
+            document
+                .getElementById("profileSport")
+                .value
+        );
+
+    profilUtilisateur.jeux =
+        convertirListe(
+            document
+                .getElementById("profileJeux")
+                .value
+        );
+
+    profilUtilisateur.couleur =
+        document
+            .getElementById("profileCouleur")
+            .value
+            .trim();
+
+    profilUtilisateur.animalPrefere =
+        document
+            .getElementById("profileAnimal")
+            .value
+            .trim();
+
+    profilUtilisateur.pays =
+        document
+            .getElementById("profilePays")
+            .value
+            .trim();
+
+    profilUtilisateur.classe =
+        document
+            .getElementById("profileClasse")
+            .value
+            .trim();
+
+    profilUtilisateur.passion =
+        document
+            .getElementById("profilePassion")
+            .value
+            .trim();
+
+    profilUtilisateur.filmPrefere =
+        document
+            .getElementById("profileFilm")
+            .value
+            .trim();
+
+    profilUtilisateur.musiquePreferee =
+        document
+            .getElementById("profileMusique")
+            .value
+            .trim();
+
+    sauvegarder();
+
+    fermerModal();
+
+    afficherMessage(
+        "✅ Profil enregistré ! Je pourrai maintenant utiliser ces informations pour mieux te répondre.",
+        false
+    );
+}
+
+
+function profilTexte() {
+
+    const p = profilUtilisateur;
+
+    return `👤 PROFIL SAMGPT
+
+Prénom : ${p.prenom || "Non renseigné"}
+
+Âge : ${p.age || "Non renseigné"}
+
+Sports préférés : ${
+p.sport.length
+? listeVersTexte(p.sport)
+: "Non renseigné"
+}
+
+Jeux préférés : ${
+p.jeux.length
+? listeVersTexte(p.jeux)
+: "Non renseigné"
+}
+
+Couleur préférée : ${p.couleur || "Non renseignée"}
+
+Animal préféré : ${p.animalPrefere || "Non renseigné"}
+
+Pays : ${p.pays || "Non renseigné"}
+
+Classe : ${p.classe || "Non renseignée"}
+
+Passions : ${p.passion || "Non renseignées"}
+
+Film préféré : ${p.filmPrefere || "Non renseigné"}
+
+Musique préférée : ${p.musiquePreferee || "Non renseignée"}`;
+}
+
+
+function questionProfil(question) {
+
+    const q = nettoyer(question);
+
+    const p = profilUtilisateur;
+
+
+    if (
+        contient(q, "comment je m appelle") ||
+        contient(q, "quel est mon prenom") ||
+        contient(q, "c est quoi mon prenom") ||
+        contient(q, "tu connais mon prenom") ||
+        q === "mon prenom" ||
+        q === "mon nom"
+    ) {
+
+        if (p.prenom) {
+
+            return `Ton prénom est ${p.prenom} 😎`;
+        }
+
+        return "Je ne connais pas encore ton prénom. Tu peux le mettre dans 👤 Profil.";
+    }
+
+
+    if (
+        contient(q, "quel age j ai") ||
+        contient(q, "quel age jai") ||
+        contient(q, "quel est mon age") ||
+        contient(q, "c est quoi mon age") ||
+        contient(q, "mon age") ||
+        contient(q, "j ai quel age") ||
+        contient(q, "tu connais mon age")
+    ) {
+
+        if (p.age) {
+
+            return `Tu as ${p.age} ans. 🎂`;
+        }
+
+        return "Je ne connais pas encore ton âge. Tu peux le mettre dans 👤 Profil.";
+    }
+
+
+    if (
+        contient(q, "quel est mon sport prefere") ||
+        contient(q, "c est quoi mon sport prefere") ||
+        contient(q, "mon sport prefere") ||
+        contient(q, "quel sport j aime") ||
+        contient(q, "quels sont mes sports preferes") ||
+        contient(q, "mes sports preferes")
+    ) {
+
+        if (p.sport.length) {
+
+            return `Tes sports préférés sont : ${listeVersTexte(p.sport)} ⚽`;
+        }
+
+        return "Je ne connais pas encore tes sports préférés.";
+    }
+
+
+    if (
+        contient(q, "quel est mon jeu prefere") ||
+        contient(q, "quel est mon jeux prefere") ||
+        contient(q, "mes jeux preferes") ||
+        contient(q, "mon jeu prefere") ||
+        contient(q, "a quels jeux je joue") ||
+        contient(q, "quel jeu j aime") ||
+        contient(q, "quels jeux j aime")
+    ) {
+
+        if (p.jeux.length) {
+
+            return `Tes jeux préférés sont : ${listeVersTexte(p.jeux)} 🎮`;
+        }
+
+        return "Je ne connais pas encore tes jeux préférés.";
+    }
+
+
+    if (
+        contient(q, "quelle est ma couleur preferee") ||
+        contient(q, "ma couleur preferee") ||
+        contient(q, "c est quoi ma couleur preferee")
+    ) {
+
+        if (p.couleur) {
+
+            return `Ta couleur préférée est ${p.couleur}. 🎨`;
+        }
+
+        return "Je ne connais pas encore ta couleur préférée.";
+    }
+
+
+    if (
+        contient(q, "quelle est ma passion") ||
+        contient(q, "mes passions") ||
+        contient(q, "qu est ce que j aime") ||
+        contient(q, "ce que j aime")
+    ) {
+
+        if (p.passion) {
+
+            return `Tes passions sont : ${p.passion} 🔥`;
+        }
+
+        return "Je ne connais pas encore tes passions.";
+    }
+
+
+    if (
+        contient(q, "quel est mon animal prefere") ||
+        contient(q, "mon animal prefere")
+    ) {
+
+        if (p.animalPrefere) {
+
+            return `Ton animal préféré est le ${p.animalPrefere}. 🐾`;
+        }
+
+        return "Je ne connais pas encore ton animal préféré.";
+    }
+
+
+    if (
+        contient(q, "dans quel pays je suis") ||
+        contient(q, "quel est mon pays") ||
+        contient(q, "mon pays") ||
+        contient(q, "ou est ce que j habite")
+    ) {
+
+        if (p.pays) {
+
+            return `Ton pays est ${p.pays}. 🌍`;
+        }
+
+        return "Je ne connais pas encore ton pays.";
+    }
+
+
+    if (
+        contient(q, "dans quelle classe je suis") ||
+        contient(q, "quelle classe je suis") ||
+        contient(q, "ma classe") ||
+        contient(q, "quel est mon niveau scolaire")
+    ) {
+
+        if (p.classe) {
+
+            return `Tu es en ${p.classe}. 📚`;
+        }
+
+        return "Je ne connais pas encore ta classe.";
+    }
+
+
+    if (
+        contient(q, "quel est mon film prefere") ||
+        contient(q, "mon film prefere")
+    ) {
+
+        if (p.filmPrefere) {
+
+            return `Ton film préféré est ${p.filmPrefere}. 🎬`;
+        }
+
+        return "Je ne connais pas encore ton film préféré.";
+    }
+
+
+    if (
+        contient(q, "quelle est ma musique preferee") ||
+        contient(q, "ma musique preferee") ||
+        contient(q, "quel style de musique j aime")
+    ) {
+
+        if (p.musiquePreferee) {
+
+            return `Tu aimes surtout : ${p.musiquePreferee}. 🎵`;
+        }
+
+        return "Je ne connais pas encore tes goûts musicaux.";
+    }
+
+
+    return "";
+}
+
+
+function ajouterListeUnique(liste, valeur) {
+
+    if (!valeur) {
+        return;
+    }
+
+    valeur =
+        valeur
+            .trim()
+            .replace(/[.!?]+$/, "");
+
+    if (!valeur) {
+        return;
+    }
+
+    const elements =
+        valeur
+            .split(/\s*(?:,| et | & )\s*/i)
+            .map(element => element.trim())
+            .filter(element => element !== "");
+
+    elements.forEach(element => {
+
+        if (
+            !liste.some(
+                ancien =>
+                    nettoyer(ancien) === nettoyer(element)
+            )
+        ) {
+
+            liste.push(element);
+        }
+
+    });
+}
+
+
+function apprendre(question) {
+
+    const q = nettoyer(question);
+
+
+    const nomMatch =
+        q.match(
+            /(?:je m appelle|mon prenom est|moi c est)\s+([a-zà-ÿ-]+)/
+        );
+
+    if (nomMatch) {
+
+        profilUtilisateur.prenom =
+            nomMatch[1]
+                .charAt(0)
+                .toUpperCase() +
+            nomMatch[1]
+                .slice(1);
+    }
+
+
+    const ageMatch =
+        q.match(
+            /(?:j ai|j'ai|mon age est|age de)\s+(\d{1,3})\s*(?:ans)?/
+        );
+
+    if (ageMatch) {
+
+        profilUtilisateur.age =
+            ageMatch[1];
+    }
+
+
+    const couleurMatch =
+        q.match(
+            /(?:ma couleur preferee est|ma couleur prefere est|j aime la couleur)\s+(.+)/
+        );
+
+    if (couleurMatch) {
+
+        profilUtilisateur.couleur =
+            couleurMatch[1]
+                .trim()
+                .replace(/[.!?]+$/, "");
+    }
+
+
+    const jeuMatch =
+        q.match(
+            /(?:mes jeux preferes sont|mes jeux preferes sont|je joue a|mon jeu prefere est|mon jeu prefere c est|mon jeu prefere cest)\s+(.+)/
+        );
+
+    if (jeuMatch) {
+
+        ajouterListeUnique(
+            profilUtilisateur.jeux,
+            jeuMatch[1]
+        );
+    }
+
+
+    const sportMatch =
+        q.match(
+            /(?:mes sports preferes sont|mon sport prefere est|mon sport prefere c est|mon sport prefere cest|j aime le sport|j aime les sports|je fais du|je fais de la|je pratique)\s+(.+)/
+        );
+
+    if (sportMatch) {
+
+        ajouterListeUnique(
+            profilUtilisateur.sport,
+            sportMatch[1]
+        );
+    }
+
+
+    sauvegarder();
+}
+
+
+function reponseSalut() {
+
+    const p = profilUtilisateur;
+
+    if (p.prenom) {
+
+        return `Salut ${p.prenom} ! 👋 Comment ça va ?`;
+    }
+
+    return "Salut ! 👋 Comment puis-je t'aider ?";
+}
+
+
+function reponseMerci() {
+
+    return "Avec plaisir 😎 !";
+}
+
+
+function reponseIdentite() {
+
+    return `🤖 Je suis SAMGPT.
+
+Je suis ton assistant personnel.
+
+Je peux discuter avec toi de plein de sujets :
+
+🎮 Jeux vidéo
+⚽ Sport
+🚗 Voitures
+🏎️ F1
+🐍 Programmation
+🔬 Sciences
+🌌 Espace
+💡 Business
+📚 École
+🤖 Intelligence artificielle
+
+Et grâce à ton profil, je peux aussi utiliser certaines informations que tu m'as données.`;
+}
+
+
+function reponseAide() {
+
+    return `🤖 QUESTIONS QUE TU PEUX POSER
+
+👤 TON PROFIL
+
+• Comment je m'appelle ?
+• Quel est mon prénom ?
+• Quel âge j'ai ?
+• Quel est mon âge ?
+• Quels sont mes sports préférés ?
+• Quel est mon sport préféré ?
+• Quels sont mes jeux préférés ?
+• Quel est mon jeu préféré ?
+• Quelle est ma couleur préférée ?
+• Quelles sont mes passions ?
+• Quel est mon animal préféré ?
+• Quel est mon pays ?
+• Dans quelle classe je suis ?
+• Quel est mon film préféré ?
+• Quelle est ma musique préférée ?
+
+🚗 VOITURES
+
+• Comment fonctionne un moteur ?
+• Comment fonctionne un turbo ?
+• Qu'est-ce que le couple ?
+• Qu'est-ce que la puissance ?
+• Qu'est-ce qui rend une voiture rapide ?
+• Qu'est-ce que l'aérodynamique ?
+
+🏎️ F1
+
+• Qu'est-ce que la F1 ?
+• Comment fonctionne une F1 ?
+• Qu'est-ce que l'appui aérodynamique ?
+
+🎮 MINECRAFT
+
+• Explique-moi Minecraft
+• Qu'est-ce que Minecraft ?
+• Qu'est-ce qu'un Creeper ?
+• Qu'est-ce que le Nether ?
+• Qu'est-ce que l'Ender Dragon ?
+
+🐍 PROGRAMMATION
+
+• Qu'est-ce que Python ?
+• Comment apprendre Python ?
+• Qu'est-ce que HTML ?
+• Qu'est-ce que CSS ?
+
+🖥️ INFORMATIQUE
+
+• Qu'est-ce qu'un ordinateur ?
+• Qu'est-ce qu'un CPU ?
+• Qu'est-ce qu'un GPU ?
+• Qu'est-ce que la RAM ?
+• Qu'est-ce qu'un SSD ?
+
+🤖 INTELLIGENCE ARTIFICIELLE
+
+• Qu'est-ce que l'intelligence artificielle ?
+• Qu'est-ce qu'une IA ?
+• Qui es-tu ?
+• Qu'est-ce que SAMGPT ?
+
+🔬 SCIENCES
+
+• Qu'est-ce qu'une cellule ?
+• Qu'est-ce qu'une cellule eucaryote ?
+• Qu'est-ce qu'une cellule procaryote ?
+• Qu'est-ce que la physique ?
+• Qu'est-ce que la science ?
+
+🌌 ESPACE
+
+• Qu'est-ce que l'espace ?
+• Qu'est-ce qu'un trou noir ?
+• Qu'est-ce qu'une galaxie ?
+• Qu'est-ce qu'une planète ?
+
+💡 BUSINESS
+
+• Qu'est-ce qu'un business ?
+• Comment créer une entreprise ?
+• Comment gagner de l'argent ?
+• Comment devenir riche ?
+
+📚 ÉCOLE
+
+• Comment bien réviser ?
+• Comment apprendre un cours ?
+• Comment préparer un examen ?
+
+🧮 CALCUL
+
+• Combien font 25 + 37 ?
+• Combien fait 100 × 5 ?
+• Combien font 250 / 10 ?`;
+}
+
+
+function calcul(question) {
+
+    const q = nettoyer(question);
+
+    let expression = "";
+
+
+    if (contient(q, "combien font")) {
+
+        expression =
+            q.replace("combien font", "").trim();
+    }
+
+    else if (contient(q, "combien fait")) {
+
+        expression =
+            q.replace("combien fait", "").trim();
+    }
+
+
+    if (expression !== "") {
+
+        if (
+            !/^[0-9+\-*/().%\s]+$/.test(
+                expression
+            )
+        ) {
+
+            return "❌ Je n'arrive pas à calculer ça.";
+        }
+
+
+        try {
+
+            const resultat =
+                Function(
+                    '"use strict"; return (' +
+                    expression +
+                    ')'
+                )();
+
+
+            return "🧮 Résultat : " + resultat;
+
+        }
+
+        catch {
+
+            return "❌ Je n'arrive pas à calculer ça.";
+        }
+    }
+
+
+    return "";
+}
+
+
+function moteur() {
+
+    return `🚗 COMMENT FONCTIONNE UN MOTEUR ?
+
+Un moteur thermique transforme
+l'énergie du carburant en mouvement.
+
+Dans un moteur 4 temps :
+
+1️⃣ Admission
+2️⃣ Compression
+3️⃣ Combustion
+4️⃣ Échappement
+
+Le piston fait tourner le vilebrequin,
+qui transmet ensuite le mouvement
+à la transmission puis aux roues.`;
+}
+
+
+function turbo() {
+
+    return `🔥 COMMENT FONCTIONNE UN TURBO ?
+
+Les gaz d'échappement font tourner
+une turbine.
+
+Cette turbine entraîne un compresseur.
+
+Le compresseur comprime l'air entrant
+dans le moteur.
+
+Cela permet généralement de faire entrer
+davantage d'air et donc de permettre
+une combustion plus importante.
+
+Gaz d'échappement
+↓
+Turbine
+↓
+Axe
+↓
+Compresseur
+↓
+Air comprimé
+↓
+Moteur`;
+}
+
+
+function couple() {
+
+    return `⚙️ LE COUPLE
+
+Le couple mesure un effort de rotation.
+
+Il se mesure en Newton-mètres :
+
+Nm
+
+Imagine une clé :
+
+Plus tu exerces une force importante
+sur la clé, plus le couple est important.
+
+Le couple et la puissance sont liés,
+mais ce ne sont pas la même chose.`;
+}
+
+
+function puissance() {
+
+    return `🐎 LA PUISSANCE
+
+La puissance indique la vitesse à laquelle
+un moteur peut effectuer un travail.
+
+Elle dépend notamment du couple
+et du régime moteur.
+
+C'est pour cela que couple et puissance
+ne sont pas exactement la même chose.`;
+}
+
+
+function f1() {
+
+    return `🏎️ FORMULE 1
+
+Une F1 moderne possède notamment :
+
+🔥 moteur V6 turbo hybride
+⚡ système électrique
+🌬️ aérodynamique avancée
+🛞 pneus très performants
+⚙️ boîte de vitesses sophistiquée
+🛑 freinage très puissant
+
+L'aérodynamique joue un rôle énorme
+dans les performances en virage.`;
+}
+
+
+function aerodynamique() {
+
+    return `🌬️ AÉRODYNAMIQUE
+
+L'aérodynamique étudie la manière
+dont l'air agit sur les objets.
+
+Sur une voiture, on cherche notamment
+à gérer :
+
+⬇️ L'appui aérodynamique
+➡️ La traînée
+
+Les ailes, le fond plat et le diffuseur
+permettent de contrôler l'écoulement de l'air.`;
+}
+
+
+function voiture() {
+
+    return `🚗 QU'EST-CE QUI REND UNE VOITURE RAPIDE ?
+
+Plusieurs éléments comptent :
+
+🐎 puissance
+⚙️ couple
+⚖️ poids
+🛞 pneus
+🌬️ aérodynamique
+⚙️ transmission
+🛑 freinage
+📐 rapports de boîte
+
+Le rapport poids/puissance est
+particulièrement important.`;
+}
+
+
+function minecraft() {
+
+    return `🎮 MINECRAFT
+
+Minecraft est un jeu sandbox.
+
+Tu peux :
+
+⛏️ miner
+🏗️ construire
+⚔️ combattre
+🌎 explorer
+⚙️ utiliser la redstone
+🔥 explorer le Nether
+🐉 combattre l'Ender Dragon
+🎨 utiliser des mods
+
+Il est possible de jouer de très
+nombreuses façons différentes.`;
+}
+
+
+function creeper() {
+
+    return `💚 LE CREEPER
+
+Le Creeper est un mob emblématique
+de Minecraft.
+
+Il approche généralement le joueur
+avant de déclencher son explosion.
+
+💥 BOOM !`;
+}
+
+
+function nether() {
+
+    return `🔥 LE NETHER
+
+Le Nether est une dimension dangereuse.
+
+On peut notamment y trouver :
+
+👹 Ghasts
+💀 Wither Skeletons
+🐷 Piglins
+🏰 Forteresses
+🔥 Beaucoup de lave
+
+On y trouve aussi plusieurs ressources
+importantes pour la progression.`;
+}
+
+
+function dragon() {
+
+    return `🐉 L'ENDER DRAGON
+
+L'Ender Dragon est le boss principal
+de la progression classique de Minecraft.
+
+Il se trouve dans l'End.
+
+Les cristaux situés sur les piliers
+peuvent restaurer sa vie.`;
+}
+
+
+function pythonInfo() {
+
+    return `🐍 PYTHON
+
+Python est un langage de programmation
+très populaire.
+
+Il est utilisé pour :
+
+🤖 IA
+🌐 développement web
+⚙️ automatisation
+📊 analyse de données
+🎮 jeux
+🧪 sciences
+
+Exemple :
+
+nom = "SAMGPT"
+
+print("Bonjour", nom)`;
+}
+
+
+function htmlInfo() {
+
+    return `🌐 HTML
+
+HTML sert à créer la structure
+d'une page web.
+
+Exemple :
+
+<h1>Bonjour</h1>
+
+<button>Cliquer</button>
+
+HTML = structure
+CSS = apparence
+JavaScript = interactions`;
+}
+
+
+function cssInfo() {
+
+    return `🎨 CSS
+
+CSS sert à gérer l'apparence
+d'une page web.
+
+Il permet de modifier :
+
+🎨 couleurs
+📏 tailles
+📍 positions
+⭕ bordures
+📐 espacements
+✨ animations`;
+}
+
+
+function ordinateur() {
+
+    return `🖥️ ORDINATEUR
+
+🧠 CPU
+Processeur.
+
+🎮 GPU
+Calcul graphique.
+
+💾 RAM
+Mémoire temporaire.
+
+📦 SSD
+Stockage.
+
+🔌 ALIMENTATION
+Fournit l'électricité.
+
+🔩 CARTE MÈRE
+Relie les composants.`;
+}
+
+
+function intelligenceArtificielle() {
+
+    return `🤖 INTELLIGENCE ARTIFICIELLE
+
+Une IA est un système informatique
+capable d'effectuer certaines tâches
+qui nécessitent habituellement
+des capacités humaines.
+
+Elle peut notamment traiter :
+
+🧠 le langage
+👁️ les images
+🎤 la voix
+📊 les données
+
+SAMGPT fonctionne actuellement
+avec un système local de réponses.
+
+Une prochaine étape pourrait être
+de le connecter à une véritable IA.`;
+}
+
+
+function science() {
+
+    return `🔬 SCIENCES
+
+🧬 Biologie
+Étude du vivant.
+
+⚛️ Physique
+Forces, énergie et mouvement.
+
+🧪 Chimie
+Matière et réactions chimiques.
+
+🌌 Astronomie
+Étude de l'espace.`;
+}
+
+
+function cellules() {
+
+    return `🧬 LES CELLULES
+
+Deux grands types sont souvent étudiés :
+
+🦠 PROCARYOTES
+
+Ils ne possèdent pas de noyau délimité
+par une membrane.
+
+Exemple :
+Les bactéries.
+
+🔬 EUCARYOTES
+
+Ils possèdent généralement un noyau.
+
+Exemples :
+Cellules animales et végétales.`;
+}
+
+
+function physique() {
+
+    return `⚛️ PHYSIQUE
+
+La physique étudie notamment :
+
+💪 forces
+⚡ énergie
+🏃 mouvement
+🚀 vitesse
+📈 accélération
+💡 lumière
+🔌 électricité
+
+Une formule importante :
+
+F = m × a`;
+}
+
+
+function espace() {
+
+    return `🌌 ESPACE
+
+Notre galaxie est la Voie lactée.
+
+Notre Soleil est une étoile.
+
+La Terre tourne autour du Soleil.
+
+Notre système solaire possède
+huit planètes.`;
+}
+
+
+function trouNoir() {
+
+    return `🕳️ TROU NOIR
+
+Un trou noir est une région de l'espace
+où la gravité est extrêmement forte.
+
+Au-delà de l'horizon des événements,
+la lumière ne peut plus s'échapper.`;
+}
+
+
+function business() {
+
+    return `💡 BUSINESS
+
+Un business commence souvent
+par un problème.
+
+PROBLÈME
+↓
+SOLUTION
+↓
+CLIENT
+↓
+DISTRIBUTION
+↓
+REVENUS
+
+Une bonne idée ne suffit pas :
+il faut proposer quelque chose
+que des clients veulent réellement.`;
+}
+
+
+function argent() {
+
+    return `💰 ARGENT
+
+On peut gagner de l'argent
+en créant de la valeur.
+
+Par exemple :
+
+💻 logiciel
+🎥 contenu
+🛍️ produit
+🛠️ service
+📱 application
+
+Une question importante est :
+
+Quel problème puis-je résoudre ?`;
+}
+
+
+function ecole() {
+
+    return `📚 POUR BIEN RÉVISER
+
+1️⃣ Comprends le cours.
+
+2️⃣ Ferme le cours.
+
+3️⃣ Explique la notion
+avec tes propres mots.
+
+4️⃣ Fais des exercices.
+
+5️⃣ Corrige tes erreurs.
+
+6️⃣ Recommence les notions difficiles.
+
+Se tester activement est généralement
+plus efficace que simplement relire
+son cours.`;
+}
+
+
+
+/* =========================================================
+   CONTEXTE DE CONVERSATION — SUJET PAR SUJET
+   ========================================================= */
+
+function definirContexte(topic, subtopic = "") {
+    contexte.topic = topic || contexte.topic || "";
+    contexte.subtopic = subtopic || "";
+    try {
+        localStorage.setItem("samgpt_contexte", JSON.stringify(contexte));
+    } catch {}
+}
+
+function estDemandeDeSujet(q, variantes) {
+    return correspond(q, variantes, 0.40);
+}
+
+function questionCourteDeSuivi(q) {
+    const mots = q.split(" ").filter(Boolean);
+
+    return (
+        mots.length <= 8 &&
+        (
+            contientAuMoinsUn(q, [
+                "ca", "cela", "ce", "cette", "cet", "il", "elle", "le", "la", "les", "lui", "sa", "son", "ses", "et"
+            ]) ||
+            contientAuMoinsUn(q, [
+                "pourquoi", "comment", "a quoi", "a quoi ca sert", "ca sert a quoi", "c est quoi", "quoi", "et"
+            ])
+        )
+    );
+}
+
+function reponseSujetVoiture() {
+    definirContexte("voitures", "voiture");
+
+    return `🚗 OK, on part sur les voitures !
+
+Je garde ce sujet en tête. Tu peux me demander par exemple :
+
+• Comment fonctionne un moteur ?
+• C'est quoi un turbo ?
+• C'est quoi le couple ?
+• C'est quoi la puissance ?
+• À quoi sert l'aérodynamique ?
+
+Tu peux aussi simplement dire « et le turbo ? » ou « ça sert à quoi ? » : je regarderai le contexte. 😎`;
+}
+
+function reponseTurboSuivi(q) {
+    definirContexte("voitures", "turbo");
+
+    if (contientAuMoinsUn(q, ["pourquoi", "a quoi", "ca sert", "sert"])) {
+        return `🔥 À QUOI SERT UN TURBO ?
+
+Un turbo utilise l'énergie des gaz d'échappement pour comprimer davantage d'air avant son entrée dans le moteur.
+
+Plus d'air disponible permet généralement de brûler davantage de carburant et donc d'obtenir plus de puissance, à moteur de taille comparable.`;
+    }
+
+    if (contientAuMoinsUn(q, ["comment", "fonctionne", "marche"])) {
+        return turbo();
+    }
+
+    return turbo();
+}
+
+function reponseMoteurSuivi(q) {
+    definirContexte("voitures", "moteur");
+
+    if (contientAuMoinsUn(q, ["pourquoi", "a quoi", "ca sert", "sert"])) {
+        return `🚗 À QUOI SERT LE MOTEUR ?
+
+Le moteur transforme l'énergie du carburant (ou de l'électricité pour un moteur électrique) en énergie mécanique qui permet de faire avancer la voiture.`;
+    }
+
+    if (contientAuMoinsUn(q, ["comment", "fonctionne", "marche"])) {
+        return moteur();
+    }
+
+    return moteur();
+}
+
+function reponseCoupleSuivi(q) {
+    definirContexte("voitures", "couple");
+
+    if (contientAuMoinsUn(q, ["pourquoi", "a quoi", "ca sert", "sert"])) {
+        return `⚙️ À QUOI SERT LE COUPLE ?
+
+Le couple correspond à la capacité à exercer une force de rotation. Il influence notamment la facilité avec laquelle le moteur peut entraîner la voiture, surtout à bas régime.`;
+    }
+
+    return couple();
+}
+
+function reponsePuissanceSuivi(q) {
+    definirContexte("voitures", "puissance");
+
+    if (contientAuMoinsUn(q, ["pourquoi", "a quoi", "ca sert", "sert"])) {
+        return `🐎 À QUOI SERT LA PUISSANCE ?
+
+La puissance indique la vitesse à laquelle le moteur peut fournir du travail. Elle joue donc un rôle important dans les performances et l'accélération, avec le poids, la transmission et d'autres facteurs.`;
+    }
+
+    return puissance();
+}
+
+function reponseAerodynamiqueSuivi(q) {
+    definirContexte("voitures", "aerodynamique");
+
+    if (contientAuMoinsUn(q, ["pourquoi", "a quoi", "ca sert", "sert"])) {
+        return `🌬️ À QUOI SERT L'AÉRODYNAMIQUE ?
+
+Elle permet notamment de contrôler l'appui et la traînée de la voiture. L'objectif est d'avoir assez d'appui pour tenir la route sans créer inutilement trop de résistance à l'air.`;
+    }
+
+    return aerodynamique();
+}
+
+function contientAuMoinsUn(texte, mots) {
+    return mots.some(mot => contient(texte, mot));
+}
+
+function repondreAvecContexte(question) {
+    const q = nettoyer(question);
+
+    if (!contexte.topic) return "";
+
+    // Si l'utilisateur désigne clairement le dernier élément discuté,
+    // on reste dessus au lieu de repartir sur un nouveau sujet.
+    if (contexte.topic === "voitures") {
+
+        if (contexte.subtopic === "turbo" && questionCourteDeSuivi(q)) {
+            return reponseTurboSuivi(q);
+        }
+
+        if (contexte.subtopic === "moteur" && questionCourteDeSuivi(q)) {
+            return reponseMoteurSuivi(q);
+        }
+
+        if (contexte.subtopic === "couple" && questionCourteDeSuivi(q)) {
+            return reponseCoupleSuivi(q);
+        }
+
+        if (contexte.subtopic === "puissance" && questionCourteDeSuivi(q)) {
+            return reponsePuissanceSuivi(q);
+        }
+
+        if (contexte.subtopic === "aerodynamique" && questionCourteDeSuivi(q)) {
+            return reponseAerodynamiqueSuivi(q);
+        }
+    }
+
+    return "";
+}
+
+/* =========================================================
+   GRAND PACK DE THÈMES DE DISCUSSION
+   ========================================================= */
+
+function reponseTheme(nom, intro, points, suivi) {
+    definirContexte(nom.toLowerCase(), nom.toLowerCase());
+    return `${intro}\n\n${points.map(x => "• " + x).join("\n")}\n\n${suivi}`;
+}
+
+function sports() {
+    return reponseTheme("sport", "⚽ LE SPORT", [
+        "Football, basket, tennis, athlétisme et beaucoup d'autres sports",
+        "Entraînement, règles, tactique et histoire du sport",
+        "Performances, équipes, compétitions et stratégies",
+        "Tu peux me demander de comparer deux sports ou d'expliquer une règle."
+    ], "Quel sport veux-tu explorer ?");
+}
+
+function football() {
+    return reponseTheme("football", "⚽ FOOTBALL", [
+        "Règles, postes et tactiques",
+        "Attaque, défense, pressing et transitions",
+        "Compétitions, clubs et histoire du football",
+        "Entraînement et compréhension du jeu"
+    ], "Tu peux me demander : « C'est quoi un faux neuf ? », « Comment fonctionne un pressing ? » ou « Explique-moi le hors-jeu ». ");
+}
+
+function barca() {
+    return reponseTheme("football", "🔵🔴 FC BARCELONA", [
+        "Style de jeu et possession",
+        "La Masia et la formation des jeunes",
+        "Tactiques et rôles des joueurs",
+        "Histoire et grands moments du club"
+    ], "Tu peux me demander d'expliquer le tiki-taka, un poste ou une tactique.");
+}
+
+function gaming() {
+    return reponseTheme("gaming", "🎮 JEUX VIDÉO", [
+        "Minecraft, jeux compétitifs, aventure, stratégie et sandbox",
+        "Game design, mécaniques et progression",
+        "Création de maps, serveurs et expériences multijoueur",
+        "Comment fonctionnent les jeux derrière l'écran"
+    ], "Tu peux me donner le nom d'un jeu et me demander de t'expliquer son fonctionnement.");
+}
+
+function technologie() {
+    return reponseTheme("technologie", "💻 TECHNOLOGIE", [
+        "Ordinateurs, smartphones et composants",
+        "Internet, Wi-Fi, Bluetooth et réseaux",
+        "Systèmes d'exploitation et logiciels",
+        "Comment les technologies modernes fonctionnent"
+    ], "Demande-moi par exemple : « Comment fonctionne le Wi-Fi ? »");
+}
+
+function reseaux() {
+    return reponseTheme("reseaux", "🌐 INTERNET & RÉSEAUX", [
+        "Internet et serveurs",
+        "Adresses IP, DNS et routeurs",
+        "Navigateurs, sites web et requêtes",
+        "Bases de la cybersécurité"
+    ], "Tu peux me demander comment une page web arrive jusqu'à ton ordinateur.");
+}
+
+function programmation() {
+    return reponseTheme("programmation", "👨‍💻 PROGRAMMATION", [
+        "Python, JavaScript, HTML et CSS",
+        "Variables, conditions, boucles et fonctions",
+        "Sites web et petites applications",
+        "Débogage et logique informatique"
+    ], "Tu peux m'envoyer du code et me demander de t'expliquer ce qu'il fait.");
+}
+
+function javascriptInfo() {
+    return reponseTheme("programmation", "🟨 JAVASCRIPT", [
+        "JavaScript ajoute des interactions aux pages web",
+        "Variables, fonctions, événements et DOM",
+        "Boutons, formulaires et interfaces dynamiques",
+        "Applications web plus avancées"
+    ], "Tu peux me demander de t'expliquer une fonction JavaScript.");
+}
+
+function iaAvancee() {
+    return reponseTheme("ia", "🤖 INTELLIGENCE ARTIFICIELLE", [
+        "Modèles de langage et génération de texte",
+        "Reconnaissance d'images et de voix",
+        "Entraînement, données et prédictions",
+        "Limites, erreurs et utilisation responsable de l'IA"
+    ], "Tu peux me demander : « Comment une IA apprend-elle ? »");
+}
+
+function maths() {
+    return reponseTheme("maths", "🧮 MATHÉMATIQUES", [
+        "Algèbre et équations",
+        "Pourcentages, fractions et proportions",
+        "Géométrie et coordonnées",
+        "Fonctions, graphiques et statistiques"
+    ], "Tu peux me donner un exercice et je peux t'aider à le résoudre étape par étape.");
+}
+
+function geometrie() {
+    return reponseTheme("maths", "📐 GÉOMÉTRIE", [
+        "Angles, triangles et quadrilatères",
+        "Périmètres, aires et volumes",
+        "Coordonnées et équations de droites",
+        "Théorème de Pythagore"
+    ], "Tu peux me donner les mesures d'une figure et me demander un calcul.");
+}
+
+function physiqueAvancee() {
+    return reponseTheme("physique", "⚛️ PHYSIQUE", [
+        "Forces, mouvement et énergie",
+        "Électricité et circuits",
+        "Lumière, ondes et son",
+        "Gravité et lois du mouvement"
+    ], "Tu peux me demander d'expliquer une formule avec un exemple simple.");
+}
+
+function chimie() {
+    return reponseTheme("chimie", "🧪 CHIMIE", [
+        "Atomes, molécules et éléments",
+        "Réactions chimiques",
+        "Tableau périodique",
+        "Acides, bases et changements d'état"
+    ], "Tu peux me donner une réaction chimique et me demander ce qui se passe.");
+}
+
+function biologie() {
+    return reponseTheme("biologie", "🧬 BIOLOGIE", [
+        "Cellules, ADN et génétique",
+        "Organes et systèmes du corps",
+        "Évolution et écosystèmes",
+        "Micro-organismes et vivant"
+    ], "Tu peux me demander d'expliquer une partie de la cellule ou du corps.");
+}
+
+function corpsHumain() {
+    return reponseTheme("corps", "🫀 CORPS HUMAIN", [
+        "Cœur et circulation sanguine",
+        "Poumons et respiration",
+        "Cerveau et système nerveux",
+        "Digestion et système immunitaire"
+    ], "Je peux expliquer le fonctionnement général du corps de manière simple.");
+}
+
+function histoire() {
+    return reponseTheme("histoire", "🏛️ HISTOIRE", [
+        "Civilisations anciennes",
+        "Moyen Âge et époque moderne",
+        "Révolutions et guerres",
+        "Histoire contemporaine et grands mouvements sociaux"
+    ], "Donne-moi une période ou un événement et je te l'expliquerai.");
+}
+
+function droitsCiviques() {
+    return reponseTheme("droits civiques", "✊ DROITS CIVIQUES", [
+        "Martin Luther King Jr. et Malcolm X",
+        "Brown v. Board of Education",
+        "Montgomery Bus Boycott et Little Rock Nine",
+        "Ségrégation, protestation et changement politique"
+    ], "Tu peux me demander d'expliquer un événement ou de comparer deux stratégies.");
+}
+
+function geographie() {
+    return reponseTheme("geographie", "🌍 GÉOGRAPHIE", [
+        "Pays, continents et capitales",
+        "Climats, reliefs et océans",
+        "Population et urbanisation",
+        "Frontières, cartes et paysages"
+    ], "Tu peux me donner un pays et me demander de te le présenter.");
+}
+
+function espaceAvance() {
+    return reponseTheme("espace", "🌌 ESPACE & ASTRONOMIE", [
+        "Planètes et système solaire",
+        "Étoiles, galaxies et nébuleuses",
+        "Trous noirs et gravité",
+        "Exploration spatiale et fusées"
+    ], "Tu peux me demander de t'expliquer un objet spatial.");
+}
+
+function nature() {
+    return reponseTheme("nature", "🌳 NATURE & ENVIRONNEMENT", [
+        "Forêts, océans et montagnes",
+        "Écosystèmes et chaînes alimentaires",
+        "Climat et ressources naturelles",
+        "Biodiversité et protection de l'environnement"
+    ], "Tu peux me demander comment fonctionne un écosystème.");
+}
+
+function animaux() {
+    return reponseTheme("animaux", "🐾 ANIMAUX", [
+        "Chiens, chats, oiseaux et animaux sauvages",
+        "Comportement et communication animale",
+        "Adaptations et habitats",
+        "Évolution et biodiversité"
+    ], "Donne-moi un animal et je peux t'expliquer ses caractéristiques.");
+}
+
+function chiens() {
+    return reponseTheme("chiens", "🐶 CHIENS", [
+        "Communication et comportement",
+        "Apprentissage et éducation positive",
+        "Races et caractéristiques générales",
+        "Jeux, stimulation et besoins quotidiens"
+    ], "Tu peux me demander pourquoi un chien adopte un comportement particulier.");
+}
+
+function musique() {
+    return reponseTheme("musique", "🎵 MUSIQUE", [
+        "Genres musicaux et histoire",
+        "Rythme, mélodie, harmonie et instruments",
+        "Composition et production musicale",
+        "Musique de jeux vidéo et bandes originales"
+    ], "Tu peux me donner un genre ou un instrument à explorer.");
+}
+
+function cinema() {
+    return reponseTheme("cinema", "🎬 CINÉMA & SÉRIES", [
+        "Genres et narration",
+        "Personnages et arcs narratifs",
+        "Réalisation, montage et effets spéciaux",
+        "Comment un film crée du suspense ou de l'émotion"
+    ], "Tu peux me donner un film et me demander d'analyser son histoire.");
+}
+
+function litterature() {
+    return reponseTheme("litterature", "📖 LITTÉRATURE", [
+        "Personnages, thèmes et conflits",
+        "Symboles, ambiance et point de vue",
+        "Ironie, suspense et tension",
+        "Analyse de textes et d'extraits"
+    ], "Tu peux me donner un livre ou un extrait et me demander de l'analyser.");
+}
+
+function langues() {
+    return reponseTheme("langues", "🗣️ LANGUES", [
+        "Français, anglais et espagnol",
+        "Vocabulaire et grammaire",
+        "Traduction et compréhension",
+        "Phrases utiles et pratique"
+    ], "Tu peux m'écrire une phrase dans une langue et me demander de l'expliquer.");
+}
+
+function espagnol() {
+    return reponseTheme("espagnol", "🇪🇸 ESPAGNOL", [
+        "Vocabulaire du quotidien",
+        "Verbes et conjugaison",
+        "Phrases simples et naturelles",
+        "Culture et pays hispanophones"
+    ], "Tu peux m'écrire une phrase en espagnol et je peux t'expliquer sa construction.");
+}
+
+function anglais() {
+    return reponseTheme("anglais", "🇬🇧 ANGLAIS", [
+        "Vocabulaire et expressions",
+        "Grammaire et temps verbaux",
+        "Écriture et compréhension",
+        "Anglais du quotidien"
+    ], "Tu peux me donner une phrase anglaise et demander une explication.");
+}
+
+function businessAvance() {
+    return reponseTheme("business", "💼 BUSINESS & ENTREPRENEURIAT", [
+        "Idée, problème et solution",
+        "Client, marché et concurrence",
+        "Marketing, marque et contenu",
+        "Prix, revenus et modèle économique"
+    ], "Tu peux me présenter une idée de business et je peux t'aider à la structurer.");
+}
+
+function argentAvance() {
+    return reponseTheme("finance", "💰 FINANCES PERSONNELLES", [
+        "Budget et épargne",
+        "Revenus et dépenses",
+        "Différence entre actifs et dépenses",
+        "Notions générales sur l'investissement et le risque"
+    ], "Je peux expliquer les concepts financiers de manière générale.");
+}
+
+function creativite() {
+    return reponseTheme("creativite", "💡 CRÉATIVITÉ & IDÉES", [
+        "Trouver des idées de projets",
+        "Créer des histoires et univers",
+        "Trouver des concepts pour YouTube",
+        "Créer des noms, personnages et concepts"
+    ], "Donne-moi un thème et on peut construire une idée autour.");
+}
+
+function youtube() {
+    return reponseTheme("youtube", "📺 YOUTUBE & CRÉATION DE CONTENU", [
+        "Idées de vidéos et Shorts",
+        "Titres, miniatures et accroches",
+        "Storytelling et rythme",
+        "Construire une identité de chaîne"
+    ], "Tu peux me donner ton idée de vidéo et je peux t'aider à construire le concept.");
+}
+
+function ecoleAvancee() {
+    return reponseTheme("ecole", "📚 ÉCOLE & APPRENTISSAGE", [
+        "Révisions et mémorisation",
+        "Méthodes pour comprendre un cours",
+        "Préparation aux contrôles",
+        "Organisation des devoirs"
+    ], "Tu peux me donner une matière et le sujet que tu révises.");
+}
+
+function cuisine() {
+    return reponseTheme("cuisine", "🍳 CUISINE", [
+        "Recettes et techniques de base",
+        "Ingrédients et substitutions simples",
+        "Desserts, plats et snacks",
+        "Comprendre les réactions pendant la cuisson"
+    ], "Donne-moi un plat et je peux t'expliquer comment il est préparé.");
+}
+
+function voyage() {
+    return reponseTheme("voyage", "✈️ VOYAGE & DÉCOUVERTE", [
+        "Pays, villes et cultures",
+        "Monuments et paysages",
+        "Organisation générale d'un voyage",
+        "Différences culturelles et géographiques"
+    ], "Donne-moi un pays ou une ville à explorer.");
+}
+
+function voituresAvance() {
+    return reponseTheme("voitures", "🚗 AUTOMOBILE", [
+        "Moteurs, turbo et transmission",
+        "Aérodynamique et performances",
+        "Freins, pneus et suspension",
+        "Voitures sportives et technologies automobiles"
+    ], "Tu peux me donner le nom d'une voiture et me demander comment elle fonctionne.");
+}
+
+function f1Avancee() {
+    return reponseTheme("f1", "🏎️ FORMULE 1", [
+        "Aérodynamique et appui",
+        "Pneus et stratégie de course",
+        "Moteur hybride et récupération d'énergie",
+        "Tactique, qualifications et arrêts aux stands"
+    ], "Tu peux me demander d'expliquer une règle ou une stratégie de F1.");
+}
+
+function listeThemes() {
+    return `🌟 THÈMES DE DISCUSSION DE SAMGPT\n\n🚗 Voitures & mécanique\n🏎️ Formule 1\n⚽ Football & sport\n🔵🔴 FC Barcelona\n🎮 Jeux vidéo & Minecraft\n💻 Technologie & ordinateurs\n🌐 Internet & réseaux\n👨‍💻 Programmation\n🤖 Intelligence artificielle\n🧮 Maths\n⚛️ Physique\n🧪 Chimie\n🧬 Biologie\n🫀 Corps humain\n🏛️ Histoire\n✊ Droits civiques\n🌍 Géographie\n🌌 Espace & astronomie\n🌳 Nature & environnement\n🐾 Animaux\n🐶 Chiens\n🎵 Musique\n🎬 Cinéma & séries\n📖 Littérature\n🗣️ Langues\n🇪🇸 Espagnol\n🇬🇧 Anglais\n💼 Business & entrepreneuriat\n💰 Finances personnelles\n💡 Créativité & idées\n📺 YouTube & création de contenu\n📚 École & apprentissage\n🍳 Cuisine\n✈️ Voyage & découverte\n\nTu peux simplement écrire le thème que tu veux explorer.`;
+}
+
+function traiterNouveauxThemes(q) {
+    if (q === "/themes" || contient(q, "liste des themes") || contient(q, "quels sont tes themes") || contient(q, "tes themes")) return listeThemes();
+    if (contientAuMoinsUn(q, ["football", "foot", "soccer"])) return football();
+    if (contientAuMoinsUn(q, ["barca", "barcelone", "fc barcelona"])) return barca();
+    if (contientAuMoinsUn(q, ["sport", "sports", "athletisme", "tennis", "basket"])) return sports();
+    if (contientAuMoinsUn(q, ["formule 1", "f1", "grand prix"])) return f1Avancee();
+    if (contientAuMoinsUn(q, ["voiture", "automobile", "supercar", "moteur", "turbo", "chevaux", "puissance", "couple"])) return voituresAvance();
+    if (contientAuMoinsUn(q, ["minecraft", "jeu video", "jeux video", "gaming", "gamer"])) return gaming();
+    if (contientAuMoinsUn(q, ["ordinateur", "pc", "hardware", "technologie", "smartphone", "telephone" ])) return technologie();
+    if (contientAuMoinsUn(q, ["internet", "wifi", "wi fi", "dns", "ip", "reseau", "serveur"])) return reseaux();
+    if (contientAuMoinsUn(q, ["programmation", "programmer", "coder", "code", "python"])) return programmation();
+    if (contientAuMoinsUn(q, ["javascript", "js"])) return javascriptInfo();
+    if (contientAuMoinsUn(q, ["intelligence artificielle", "intelligence artificielle", "ia", "machine learning", "apprentissage automatique"])) return iaAvancee();
+    if (contientAuMoinsUn(q, ["math", "maths", "mathematiques", "equation", "pourcentage", "fraction"])) return maths();
+    if (contientAuMoinsUn(q, ["geometrie", "triangle", "angle", "pythagore", "aire", "perimetre"])) return geometrie();
+    if (contientAuMoinsUn(q, ["physique", "force", "energie", "electricite", "vitesse", "acceleration"])) return physiqueAvancee();
+    if (contientAuMoinsUn(q, ["chimie", "atome", "molecule", "reaction chimique", "tableau periodique"])) return chimie();
+    if (contientAuMoinsUn(q, ["biologie", "cellule", "adn", "genetique", "evolution"])) return biologie();
+    if (contientAuMoinsUn(q, ["corps humain", "coeur", "poumon", "cerveau", "digestion", "systeme immunitaire"])) return corpsHumain();
+    if (contientAuMoinsUn(q, ["histoire", "revolution", "guerre", "civilisation", "empire"])) return histoire();
+    if (contientAuMoinsUn(q, ["droits civiques", "civil rights", "martin luther king", "malcolm x", "brown v board", "little rock", "montgomery bus boycott"])) return droitsCiviques();
+    if (contientAuMoinsUn(q, ["geographie", "pays", "continent", "capitale", "ocean", "climat", "montagne"])) return geographie();
+    if (contientAuMoinsUn(q, ["espace", "astronomie", "planete", "galaxie", "trou noir", "etoile", "fusee"])) return espaceAvance();
+    if (contientAuMoinsUn(q, ["nature", "environnement", "ecosysteme", "biodiversite", "foret", "ocean"])) return nature();
+    if (contientAuMoinsUn(q, ["animal", "animaux", "zoo", "espece animale"])) return animaux();
+    if (contientAuMoinsUn(q, ["chien", "chiens", "chiot", "dressage canin"])) return chiens();
+    if (contientAuMoinsUn(q, ["musique", "chanson", "instrument", "rythme", "melodie", "rap", "rock"])) return musique();
+    if (contientAuMoinsUn(q, ["cinema", "film", "films", "serie", "series", "acteur", "actrice"])) return cinema();
+    if (contientAuMoinsUn(q, ["litterature", "livre", "roman", "poeme", "poesie", "personnage"])) return litterature();
+    if (contientAuMoinsUn(q, ["langue", "langues", "traduction", "vocabulaire", "grammaire"])) return langues();
+    if (contientAuMoinsUn(q, ["espagnol", "espanol", "spanish"])) return espagnol();
+    if (contientAuMoinsUn(q, ["anglais", "english"])) return anglais();
+    if (contientAuMoinsUn(q, ["business", "entreprise", "entrepreneur", "entrepreneuriat", "startup"])) return businessAvance();
+    if (contientAuMoinsUn(q, ["argent", "finance", "budget", "epargne", "investissement"])) return argentAvance();
+    if (contientAuMoinsUn(q, ["idee", "creativite", "creative", "concept", "invention"])) return creativite();
+    if (contientAuMoinsUn(q, ["youtube", "youtubeur", "youtubeuse", "shorts", "video", "creation de contenu"])) return youtube();
+    if (contientAuMoinsUn(q, ["ecole", "devoir", "revision", "examen", "controle", "cours", "etude"])) return ecoleAvancee();
+    if (contientAuMoinsUn(q, ["cuisine", "recette", "cuisiner", "plat", "dessert"])) return cuisine();
+    if (contientAuMoinsUn(q, ["voyage", "vacances", "pays a visiter", "tourisme", "ville a visiter"])) return voyage();
+    return "";
+}
+
+
+function cerveau(question) {
+
+    const q = nettoyer(question);
+
+
+    /* =========================
+       COMMANDES
+       ========================= */
+
+    if (q === "/questions") {
+        return reponseAide();
+    }
+
+    if (correspond(q, ["/profil", "profil", "mon profil"], 0.35)) {
+        return profilTexte();
+    }
+
+    if (correspond(q, ["/memoire", "memoire", "ma memoire"], 0.35)) {
+        return afficherMemoire();
+    }
+
+    if (correspond(q, ["/reset", "reset", "reinitialise"], 0.35)) {
+        contexte = { topic: "", subtopic: "" };
+        return reset();
+    }
+
+
+    /* =========================
+       APPRENTISSAGE + PROFIL
+       ========================= */
+
+    apprendre(question);
+
+    const profilReponse = questionProfil(question);
+
+    if (profilReponse !== "") {
+        return profilReponse;
+    }
+
+
+    /* =========================
+       SUJET VOITURES
+       ========================= */
+
+    if (estDemandeDeSujet(q, [
+        "on parle de voiture",
+        "on parle des voitures",
+        "on part sur les voitures",
+        "on part sur voiture",
+        "parlons de voitures",
+        "parle moi de voitures",
+        "parle moi de voiture",
+        "je veux parler de voitures",
+        "je veux parler de voiture",
+        "parlons voiture",
+        "on parle voiture"
+    ])) {
+        return reponseSujetVoiture();
+    }
+
+
+    /* =========================
+       SALUT
+       ========================= */
+
+    if (
+        contient(q, "bonjour") ||
+        contient(q, "salut") ||
+        contient(q, "hello") ||
+        contient(q, "coucou") ||
+        contient(q, "hey") ||
+        contient(q, "yo") ||
+        q.startsWith("salut ")
+    ) {
+        return reponseSalut();
+    }
+
+
+    /* =========================
+       MERCI
+       ========================= */
+
+    if (
+        q === "merci" ||
+        contient(q, "merci beaucoup")
+    ) {
+        return reponseMerci();
+    }
+
+
+    /* =========================
+       IDENTITE
+       ========================= */
+
+    if (
+        contient(q, "qui es tu") ||
+        contient(q, "tu es qui") ||
+        contient(q, "c est quoi samgpt") ||
+        contient(q, "qui est samgpt")
+    ) {
+        return reponseIdentite();
+    }
+
+
+    /* =========================
+       CALCUL
+       ========================= */
+
+    const resultat = calcul(question);
+
+    if (resultat !== "") {
+        return resultat;
+    }
+
+
+    /* =========================
+       CONTEXTE : QUESTION DE SUIVI
+       ========================= */
+
+    const suivi = repondreAvecContexte(question);
+
+    if (suivi !== "") {
+        return suivi;
+    }
+
+
+    /* =========================
+       VOITURES — SOUS-SUJETS
+       ========================= */
+
+    if (
+        contient(q, "turbo") ||
+        contient(q, "turbocompresseur")
+    ) {
+        definirContexte("voitures", "turbo");
+        return turbo();
+    }
+
+    if (contient(q, "moteur")) {
+        definirContexte("voitures", "moteur");
+        return moteur();
+    }
+
+    if (
+        q === "f1" ||
+        contient(q, "formule 1")
+    ) {
+        definirContexte("f1", "f1");
+        return f1();
+    }
+
+    if (
+        contient(q, "aerodynamique") ||
+        contient(q, "downforce") ||
+        contient(q, "appui aerodynamique")
+    ) {
+        definirContexte("voitures", "aerodynamique");
+        return aerodynamique();
+    }
+
+    if (
+        contient(q, "couple") ||
+        contient(q, "newton metre")
+    ) {
+        definirContexte("voitures", "couple");
+        return couple();
+    }
+
+    if (
+        contient(q, "chevaux") ||
+        contient(q, "puissance") ||
+        contient(q, "horsepower")
+    ) {
+        definirContexte("voitures", "puissance");
+        return puissance();
+    }
+
+    if (
+        contient(q, "voiture") ||
+        contient(q, "supercar") ||
+        contient(q, "automobile")
+    ) {
+        return reponseSujetVoiture();
+    }
+
+
+    /* =========================
+       MINECRAFT
+       ========================= */
+
+    if (contient(q, "minecraft")) {
+        definirContexte("minecraft", "minecraft");
+        return minecraft();
+    }
+
+    if (contient(q, "creeper")) {
+        definirContexte("minecraft", "creeper");
+        return creeper();
+    }
+
+    if (contient(q, "nether")) {
+        definirContexte("minecraft", "nether");
+        return nether();
+    }
+
+    if (
+        contient(q, "ender dragon") ||
+        contient(q, "dragon de l end")
+    ) {
+        definirContexte("minecraft", "ender dragon");
+        return dragon();
+    }
+
+
+    /* =========================
+       PROGRAMMATION
+       ========================= */
+
+    if (contient(q, "python")) {
+        definirContexte("programmation", "python");
+        return pythonInfo();
+    }
+
+    if (contient(q, "html")) {
+        definirContexte("programmation", "html");
+        return htmlInfo();
+    }
+
+    if (contient(q, "css")) {
+        definirContexte("programmation", "css");
+        return cssInfo();
+    }
+
+
+    /* =========================
+       INFORMATIQUE
+       ========================= */
+
+    if (
+        contient(q, "ordinateur") ||
+        contient(q, "cpu") ||
+        contient(q, "gpu") ||
+        contient(q, "ram") ||
+        contient(q, "ssd")
+    ) {
+        definirContexte("informatique", "ordinateur");
+        return ordinateur();
+    }
+
+
+    /* =========================
+       IA
+       ========================= */
+
+    if (
+        contient(q, "intelligence artificielle") ||
+        contient(q, "chatgpt") ||
+        contient(q, "ia")
+    ) {
+        definirContexte("ia", "intelligence artificielle");
+        return intelligenceArtificielle();
+    }
+
+
+    /* =========================
+       SCIENCES
+       ========================= */
+
+    if (
+        contient(q, "cellule") ||
+        contient(q, "eucaryote") ||
+        contient(q, "procaryote")
+    ) {
+        definirContexte("sciences", "cellules");
+        return cellules();
+    }
+
+    if (
+        contient(q, "science") ||
+        contient(q, "biologie") ||
+        contient(q, "chimie")
+    ) {
+        definirContexte("sciences", "science");
+        return science();
+    }
+
+    if (
+        contient(q, "physique") ||
+        contient(q, "force") ||
+        contient(q, "acceleration")
+    ) {
+        definirContexte("sciences", "physique");
+        return physique();
+    }
+
+
+    /* =========================
+       ESPACE
+       ========================= */
+
+    if (
+        contient(q, "espace") ||
+        contient(q, "univers") ||
+        contient(q, "galaxie") ||
+        contient(q, "planete")
+    ) {
+        definirContexte("espace", "espace");
+        return espace();
+    }
+
+    if (
+        contient(q, "trou noir") ||
+        contient(q, "black hole")
+    ) {
+        definirContexte("espace", "trou noir");
+        return trouNoir();
+    }
+
+
+    /* =========================
+       BUSINESS
+       ========================= */
+
+    if (
+        contient(q, "business") ||
+        contient(q, "entreprise") ||
+        contient(q, "entrepreneuriat")
+    ) {
+        definirContexte("business", "business");
+        return business();
+    }
+
+    if (
+        contient(q, "argent") ||
+        contient(q, "riche") ||
+        contient(q, "gagner de l argent")
+    ) {
+        definirContexte("business", "argent");
+        return argent();
+    }
+
+
+    /* =========================
+       ECOLE
+       ========================= */
+
+    if (
+        contient(q, "ecole") ||
+        contient(q, "devoir") ||
+        contient(q, "revision") ||
+        contient(q, "examen")
+    ) {
+        definirContexte("ecole", "revision");
+        return ecole();
+    }
+
+
+    const nouveauTheme = traiterNouveauxThemes(q);
+
+    if (nouveauTheme !== "") {
+        return nouveauTheme;
+    }
+
+    return `🤔 Je ne suis pas encore capable de répondre précisément à cette question.
+
+Tu peux essayer de la reformuler ou utiliser /questions pour voir les sujets que je peux comprendre.`;
+}
+
+
+function afficherMessage(
+    texte,
+    utilisateur = false
+) {
+
+    if (welcome) {
+
+        welcome.style.display = "none";
+    }
+
+
+    const message =
+        document.createElement("div");
+
+    message.className =
+        utilisateur
+        ? "message user"
+        : "message bot";
+
+
+    const avatar =
+        document.createElement("div");
+
+    avatar.className = "avatar";
+
+    avatar.textContent =
+        utilisateur
+        ? "👤"
+        : "🤖";
+
+
+    const bubble =
+        document.createElement("div");
+
+    bubble.className = "bubble";
+
+    bubble.textContent = texte;
+
+
+    message.appendChild(avatar);
+
+    message.appendChild(bubble);
+
+    chat.appendChild(message);
+
+
+    setTimeout(() => {
+
+        chat.scrollTo({
+
+            top: chat.scrollHeight,
+
+            behavior: "smooth"
+
+        });
+
+    }, 30);
+}
+
+
+function envoyer() {
+
+    const question =
+        input.value.trim();
+
+
+    if (!question) {
+
+        return;
+    }
+
+
+    input.value = "";
+
+    ajusterInput();
+
+
+    afficherMessage(
+        question,
+        true
+    );
+
+
+    conversation.push({
+
+        role: "user",
+
+        text: question
+
+    });
+
+
+    const reponse =
+        cerveau(question);
+
+
+    conversation.push({
+
+        role: "bot",
+
+        text: reponse
+
+    });
+
+
+    afficherMessage(
+        reponse,
+        false
+    );
+
+
+    sauvegarderConversation();
+
+    sauvegarder();
+}
+
+
+function ajusterInput() {
+
+    input.style.height = "auto";
+
+    input.style.height =
+        Math.min(
+            input.scrollHeight,
+            150
+        ) + "px";
+}
+
+
+input.addEventListener(
+    "input",
+    ajusterInput
+);
+
+
+input.addEventListener(
+    "keydown",
+    function(event) {
+
+        if (
+            event.key === "Enter" &&
+            !event.shiftKey
+        ) {
+
+            event.preventDefault();
+
+            envoyer();
+        }
+
+    }
+);
+
+
+sendButton.addEventListener(
+    "click",
+    envoyer
+);
+
+
+document
+    .getElementById("newChatButton")
+    .addEventListener(
+        "click",
+        nouveauChat
+    );
+
+
+function nouveauChat() {
+
+    if (conversation.length > 0) {
+
+        const titre =
+            obtenirTitreConversation();
+
+        historique.unshift({
+
+            id:
+                Date.now(),
+
+            title:
+                titre,
+
+            messages:
+                conversation.slice()
+
+        });
+    }
+
+
+    conversation = [];
+
+    chatActuel = null;
+
+    contexte = { topic: "", subtopic: "" };
+
+
+    supprimerMessages();
+
+
+    welcome.style.display =
+        "block";
+
+
+    sauvegarder();
+
+    afficherHistorique();
+
+    input.focus();
+}
+
+
+function obtenirTitreConversation() {
+
+    const premierMessage =
+        conversation.find(
+            message =>
+                message.role === "user"
+        );
+
+
+    if (!premierMessage) {
+
+        return "Nouvelle conversation";
+    }
+
+
+    let titre =
+        premierMessage.text.trim();
+
+
+    if (!titre) {
+
+        return "Nouvelle conversation";
+    }
+
+
+    if (titre.length > 28) {
+
+        titre =
+            titre.substring(0, 28) +
+            "...";
+    }
+
+
+    return titre;
+}
+
+
+function afficherHistorique() {
+
+    historyContainer.innerHTML = "";
+
+
+    historique.forEach(
+        conversationHistorique => {
+
+            if (
+                !conversationHistorique ||
+                !conversationHistorique.id ||
+                !Array.isArray(
+                    conversationHistorique.messages
+                )
+            ) {
+
+                return;
+            }
+
+
+            const row =
+                document.createElement("div");
+
+            row.className =
+                "history-row";
+
+
+            const bouton =
+                document.createElement("button");
+
+            bouton.className =
+                "history-item";
+
+
+            bouton.textContent =
+                "💬 " +
+                (
+                    conversationHistorique.title ||
+                    "Nouvelle conversation"
+                );
+
+
+            bouton.onclick =
+                function() {
+
+                    chargerConversation(
+                        conversationHistorique.id
+                    );
+
+                };
+
+
+            const supprimer =
+                document.createElement("button");
+
+            supprimer.className =
+                "delete-chat";
+
+            supprimer.textContent =
+                "🗑";
+
+
+            supprimer.title =
+                "Supprimer cette conversation";
+
+
+            supprimer.onclick =
+                function(event) {
+
+                    event.stopPropagation();
+
+                    supprimerConversation(
+                        conversationHistorique.id
+                    );
+
+                };
+
+
+            row.appendChild(bouton);
+
+            row.appendChild(supprimer);
+
+            historyContainer.appendChild(row);
+
+        }
+    );
+
+
+    if (historyContainer.children.length === 0) {
+
+        const vide =
+            document.createElement("div");
+
+        vide.style.color =
+            "#555f6f";
+
+        vide.style.fontSize =
+            "12px";
+
+        vide.style.padding =
+            "10px 12px";
+
+        vide.textContent =
+            "Aucune ancienne conversation.";
+
+        historyContainer.appendChild(vide);
+    }
+}
+
+
+function chargerConversation(id) {
+
+    const ancienne =
+        historique.find(
+            element =>
+                element.id === id
+        );
+
+
+    if (!ancienne) {
+
+        return;
+    }
+
+
+    conversation =
+        ancienne.messages
+            .filter(
+                message =>
+                    message &&
+                    (
+                        message.role === "user" ||
+                        message.role === "bot"
+                    ) &&
+                    typeof message.text === "string"
+            )
+            .map(
+                message => ({
+                    role: message.role,
+                    text: message.text
+                })
+            );
+
+
+    chatActuel = id;
+
+
+    supprimerMessages();
+
+
+    welcome.style.display =
+        "none";
+
+
+    conversation.forEach(
+        message => {
+
+            afficherMessage(
+                message.text,
+                message.role === "user"
+            );
+
+        }
+    );
+
+
+    sauvegarderConversation();
+}
+
+
+function supprimerConversation(id) {
+
+    historique =
+        historique.filter(
+            conversationHistorique =>
+                conversationHistorique.id !== id
+        );
+
+
+    if (chatActuel === id) {
+
+        conversation = [];
+
+        chatActuel = null;
+
+        supprimerMessages();
+
+        welcome.style.display =
+            "block";
+    }
+
+
+    sauvegarder();
+
+    afficherHistorique();
+}
+
+
+function supprimerMessages() {
+
+    const messages =
+        chat.querySelectorAll(
+            ".message"
+        );
+
+
+    messages.forEach(
+        message =>
+            message.remove()
+    );
+}
+
+
+function afficherMemoire() {
+
+    if (
+        conversation.length === 0
+    ) {
+
+        return "🧠 La mémoire de cette conversation est vide.";
+    }
+
+
+    return (
+        "🧠 MÉMOIRE DE LA CONVERSATION\n\n" +
+
+        conversation
+            .map(
+                message =>
+                    message.role === "user"
+                    ? "👤 " + message.text
+                    : "🤖 " + message.text
+            )
+            .join("\n\n")
+    );
+}
+
+
+function reset() {
+
+    conversation = [];
+
+    chatActuel = null;
+
+    contexte = { topic: "", subtopic: "" };
+
+
+    supprimerMessages();
+
+
+    welcome.style.display =
+        "block";
+
+
+    sauvegarderConversation();
+
+
+    return "🧹 La conversation actuelle a été réinitialisée.";
+}
+
+
+function fermerModal() {
+
+    modal.classList.remove("show");
+}
+
+
+modalClose.addEventListener(
+    "click",
+    fermerModal
+);
+
+
+modal.addEventListener(
+    "click",
+    function(event) {
+
+        if (
+            event.target === modal
+        ) {
+
+            fermerModal();
+        }
+
+    }
+);
+
+
+document
+    .getElementById("profileButton")
+    .addEventListener(
+        "click",
+        ouvrirProfil
+    );
+
+
+document
+    .getElementById("memoryButton")
+    .addEventListener(
+        "click",
+        function() {
+            const texteMemoire = afficherMemoire();
+            afficherMessage(texteMemoire, false);
+            conversation.push({ role: "bot", text: texteMemoire });
+            sauvegarderConversation();
+        }
+    );
+
+
+document
+    .getElementById("resetButton")
+    .addEventListener(
+        "click",
+        function() {
+            const message = reset();
+            afficherMessage(message, false);
+            sauvegarder();
+            input.focus();
+        }
+    );
+
+
+document
+    .getElementById("questionsButton")
+    .addEventListener(
+        "click",
+        function() {
+
+            modalTitle.textContent =
+                "🤖 Questions que tu peux poser";
+
+
+            modalContent.innerHTML =
+                "<p>" +
+                echapperHTML(
+                    reponseAide()
+                ) +
+                "</p>";
+
+
+            modal.classList.add("show");
+
+        }
+    );
+
+
+document
+    .getElementById("settingsButton")
+    .addEventListener(
+        "click",
+        function() {
+
+            modalTitle.textContent =
+                "⚙️ Paramètres";
+
+
+            modalContent.innerHTML = `
+
+                <p>
+                    SAMGPT fonctionne actuellement
+                    directement dans ton navigateur.
+                </p>
+
+                <p>
+                    Les prochaines versions pourront
+                    ajouter une véritable IA, des thèmes,
+                    la voix, Internet, des fichiers et
+                    beaucoup plus.
+                </p>
+            `;
+
+
+            modal.classList.add("show");
+
+        }
+    );
+
+
+document
+    .querySelectorAll(".suggestion")
+    .forEach(
+        bouton => {
+            bouton.addEventListener("click", function() {
+                input.value = bouton.dataset.question || "";
+                ajusterInput();
+                envoyer();
+            });
+        }
+    );
+
+
+function sauvegarder() {
+
+    try {
+
+        localStorage.setItem(
+            "samgpt_profil",
+            JSON.stringify(
+                profilUtilisateur
+            )
+        );
+
+
+        localStorage.setItem(
+            "samgpt_historique",
+            JSON.stringify(
+                historique
+            )
+        );
+
+
+        localStorage.setItem(
+            "samgpt_conversation",
+            JSON.stringify(
+                conversation
+            )
+        );
+
+        localStorage.setItem(
+            "samgpt_contexte",
+            JSON.stringify(contexte)
+        );
+
+    }
+
+    catch (erreur) {
+
+        console.warn(
+            "Sauvegarde locale impossible.",
+            erreur
+        );
+    }
+}
+
+
+function sauvegarderConversation() {
+
+    try {
+
+        localStorage.setItem(
+            "samgpt_conversation",
+            JSON.stringify(
+                conversation
+            )
+        );
+
+    }
+
+    catch {
+
+    }
+}
+
+
+function charger() {
+
+    try {
+        if (localStorage.getItem("samgpt_theme") === "light") {
+            document.body.classList.add("light-theme");
+        }
+
+        const profilSauvegarde =
+            localStorage.getItem(
+                "samgpt_profil"
+            );
+
+
+        const historiqueSauvegarde =
+            localStorage.getItem(
+                "samgpt_historique"
+            );
+
+
+        const conversationSauvegarde =
+            localStorage.getItem(
+                "samgpt_conversation"
+            );
+
+
+        if (profilSauvegarde) {
+
+            const profil =
+                JSON.parse(
+                    profilSauvegarde
+                );
+
+
+            if (
+                profil &&
+                typeof profil === "object"
+            ) {
+
+                profilUtilisateur = {
+
+                    ...profilUtilisateur,
+
+                    ...profil
+
+                };
+            }
+
+
+            if (
+                !Array.isArray(
+                    profilUtilisateur.sport
+                )
+            ) {
+
+                profilUtilisateur.sport = [];
+            }
+
+
+            if (
+                !Array.isArray(
+                    profilUtilisateur.jeux
+                )
+            ) {
+
+                profilUtilisateur.jeux = [];
+            }
+        }
+
+
+        if (historiqueSauvegarde) {
+
+            const donnees =
+                JSON.parse(
+                    historiqueSauvegarde
+                );
+
+
+            if (
+                Array.isArray(donnees)
+            ) {
+
+                historique =
+                    donnees.filter(
+                        element =>
+                            element &&
+                            element.id &&
+                            Array.isArray(
+                                element.messages
+                            )
+                    );
+
+
+                historique =
+                    historique.map(
+                        element => ({
+
+                            id:
+                                element.id,
+
+                            title:
+                                element.title ||
+                                "Nouvelle conversation",
+
+                            messages:
+                                element.messages.filter(
+                                    message =>
+                                        message &&
+                                        (
+                                            message.role === "user" ||
+                                            message.role === "bot"
+                                        ) &&
+                                        typeof message.text === "string"
+                                )
+
+                        })
+                    );
+            }
+        }
+
+
+        if (conversationSauvegarde) {
+
+            const donnees =
+                JSON.parse(
+                    conversationSauvegarde
+                );
+
+
+            if (
+                Array.isArray(donnees)
+            ) {
+
+                conversation =
+                    donnees.filter(
+                        message =>
+                            message &&
+                            (
+                                message.role === "user" ||
+                                message.role === "bot"
+                            ) &&
+                            typeof message.text === "string"
+                    );
+            }
+        }
+
+
+        const contexteSauvegarde =
+            localStorage.getItem("samgpt_contexte");
+
+        if (contexteSauvegarde) {
+            const contexteCharge = JSON.parse(contexteSauvegarde);
+
+            if (contexteCharge && typeof contexteCharge === "object") {
+                contexte = {
+                    topic: contexteCharge.topic || "",
+                    subtopic: contexteCharge.subtopic || ""
+                };
+            }
+        }
+
+    }
+
+    catch (erreur) {
+
+        console.warn(
+            "Chargement impossible.",
+            erreur
+        );
+
+        conversation = [];
+
+        historique = [];
+    }
+}
+
+
+charger();
+
+afficherHistorique();
+
+
+if (
+    conversation.length > 0
+) {
+
+    welcome.style.display =
+        "none";
+
+
+    conversation.forEach(
+        message => {
+
+            afficherMessage(
+                message.text,
+                message.role === "user"
+            );
+
+        }
+    );
+}
+
+
+input.focus();
+
+</script>
+
+</body>
+
+</html>
