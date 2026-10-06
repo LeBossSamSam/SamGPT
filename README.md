@@ -1,0 +1,2 @@
+# SamGPT
+Chatgpt without AI
